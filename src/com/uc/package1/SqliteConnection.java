@@ -9,15 +9,6 @@ public class SqliteConnection {
 
 	static Connection establishSqliteConnection() {
 		Connection conn = null;
-
-		/*
-		 * String pathLinux = "jdbc:sqlite:" + "/home/thanos18/test.db";
-		 * 
-		 * try { Class.forName("org.sqlite.JDBC"); conn =
-		 * DriverManager.getConnection(pathLinux); return conn; } catch (Exception e) {
-		 * JOptionPane.showMessageDialog(null, e); return null; }
-		 */
-
 		try {
 			Class.forName("org.sqlite.JDBC");
 			conn = DriverManager.getConnection("jdbc:sqlite:" + System.getProperty("user.dir") + "\\UrbanCouncil.db");

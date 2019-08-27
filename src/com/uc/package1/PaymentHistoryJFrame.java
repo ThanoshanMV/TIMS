@@ -285,41 +285,4 @@ public class PaymentHistoryJFrame extends JFrame {
 			column.setPreferredWidth((int) (tablePreferredWidth * (percentages[i] / total)));
 		}
 	}
-	
-	static void deletePaymentRow() {
-		PreparedStatement pst = null;
-		ResultSet rsm = null;
-		String sql = "DELETE FROM `PAYMENT` WHERE `NAME` = ?";
-		try {
-			pst = SqliteConnection.establishSqliteConnection().prepareStatement(sql);
-			pst.setString(1, StaticMembers.paymentDeleteName);
-			System.out.println(StaticMembers.paymentDeleteName);
-			if (pst.executeUpdate() > 0) {
-				JOptionPane.showMessageDialog(null, "Payment table deleted!");
-				}
-		}
-		catch (Exception e1) {
-			JOptionPane.showMessageDialog(null, e1);
-		} finally {
-			try {
-				pst.close();
-			} catch (SQLException e9) {
-				// TODO Auto-generated catch block
-				e9.printStackTrace();
-			}
-			try {
-				rsm.close();
-			} catch (SQLException e8) {
-				// TODO Auto-generated catch block
-				e8.printStackTrace();
-			}
-			try {
-				SqliteConnection.establishSqliteConnection().close();
-			} catch (SQLException e7) {
-				// TODO Auto-generated catch block
-				e7.printStackTrace();
-			}
-		}
-
-}
 }
