@@ -114,7 +114,7 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 				txtparkno.setText((String) comboBoxParkName.getSelectedItem());
 			}
 		});
-		comboBoxParkName.setModel(new DefaultComboBoxModel(new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "DA", "DB", "DC"}));
+		comboBoxParkName.setModel(new DefaultComboBoxModel(new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "DA", "DB", "DC", "DD", "DE", "DF", "DG", "DH"}));
 		comboBoxParkName.setBounds(329, 82, 133, 24);
 		contentPane.add(comboBoxParkName);
 

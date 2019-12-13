@@ -95,8 +95,7 @@ public class EditAutoDriverFormJFrame extends JFrame {
 		txtImageUrl.setText(StaticMembers.imageURL);
 
 		JComboBox comboBox1 = new JComboBox();
-		comboBox1.setModel(new DefaultComboBoxModel(
-				new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q" }));
+		comboBox1.setModel(new DefaultComboBoxModel(new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "DA", "DB", "DC", "DD", "DE", "DF", "DG", "DH"}));
 		comboBox1.setFont(new Font("Dialog", Font.BOLD, 15));
 		comboBox1.setBounds(298, 91, 157, 33);
 		contentPane.add(comboBox1);

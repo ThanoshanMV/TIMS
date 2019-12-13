@@ -68,7 +68,7 @@ public class ChooseEditDriverJFrame extends JFrame {
 		contentPane.setLayout(null);
 
 		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "DA", "DB", "DC"}));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "DA", "DB", "DC", "DD", "DE", "DF", "DG", "DH"}));
 		comboBox.setFont(new Font("Dialog", Font.BOLD, 15));
 		comboBox.setBounds(224, 112, 157, 33);
 		contentPane.add(comboBox);
