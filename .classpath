@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="/home/thanos18/eclipse-workspace/TIMS/Resources/javax.mail.jar"/>
 	<classpathentry kind="lib" path="/home/thanos18/eclipse-workspace/TIMS/Resources/activation.jar"/>
 	<classpathentry kind="lib" path="/home/thanos18/eclipse-workspace/TIMS/Resources/mail.jar"/>
+	<classpathentry kind="lib" path="Resources/mysql-connector-java-8.0.20.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
