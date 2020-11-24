@@ -214,10 +214,11 @@ public class SearchJFrame extends JFrame {
 				try {
 					String selection = (String) comboBoxSearch.getSelectedItem();
 					comboBoxSelection = selection;
+					System.out.println(comboBoxSelection);
 					String query = "SELECT `PARK`,`PARK NO`,`WHEEL NO`,`DRIVER NAME`,`ADDRESS`,`NIC NUMBER`,`PHONE NUMBER`,`GS` FROM `DRIVER` WHERE `"
-							+ comboBoxSelection + "` = ?";
+							+ comboBoxSelection + "` LIKE ?";
 					ps = SqliteConnection.establishSqliteConnection().prepareStatement(query);
-					ps.setString(1, txtsearch.getText());
+					ps.setString(1, "%" + txtsearch.getText() + "%");
 					text = txtsearch.getText();
 					rs = ps.executeQuery();
 
