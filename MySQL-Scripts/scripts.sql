@@ -27,6 +27,25 @@ CREATE TABLE employee (
     FOREIGN KEY (roleid) REFERENCES role(id)
 );
 
+# create table driver
+CREATE TABLE driver (
+	id INT NOT NULL AUTO_INCREMENT,
+	name VARCHAR(255),
+	nic VARCHAR(255) NOT NULL,
+    phoneno INT,
+    wheelno VARCHAR(255),
+    address VARCHAR(255),
+    parkno VARCHAR(255),
+	park VARCHAR(10),
+    # BLOB datatype was not enough for images. So, changing it to MEDIUMBLOB
+    # TINYBLOB ≈ 255 bytes, BLOB ≈ 64KB, MEDIUMBLOB ≈ 16MB and LONGBLOB ≈ 4GB
+    images MEDIUMBLOB,
+    imageurl VARCHAR(255),
+    gs VARCHAR(10),
+    
+    PRIMARY KEY (id)
+);
+
 # create table payment
 CREATE TABLE payment (
 	id INT NOT NULL AUTO_INCREMENT,
@@ -47,28 +66,8 @@ CREATE TABLE payment (
     year2021 DECIMAL(15,2),
     year2022 DECIMAL(15,2),
     
-    PRIMARY KEY (id)
-);
-
-# create table driver
-CREATE TABLE driver (
-	id INT NOT NULL AUTO_INCREMENT,
-    paymentid INT,
-	name VARCHAR(255),
-	nic VARCHAR(255) NOT NULL,
-    phoneno INT,
-    wheelno VARCHAR(255),
-    address VARCHAR(255),
-    parkno VARCHAR(255),
-	park VARCHAR(10),
-    # BLOB datatype was not enough for images. So, changing it to MEDIUMBLOB
-    # TINYBLOB ≈ 255 bytes, BLOB ≈ 64KB, MEDIUMBLOB ≈ 16MB and LONGBLOB ≈ 4GB
-    images MEDIUMBLOB,
-    imageurl VARCHAR(255),
-    gs VARCHAR(10),
-    
     PRIMARY KEY (id),
-    FOREIGN KEY (paymentid) REFERENCES payment(id)
+	FOREIGN KEY (id) REFERENCES driver(id)
 );
 
 # create table employee_driver
@@ -97,5 +96,7 @@ INSERT INTO employee(roleid, name, username, nic, email, job, password) VALUES
 SELECT * FROM employee;
 
 SELECT * FROM driver;
+
+SELECT * FROM payment;
 
 SELECT * FROM role;

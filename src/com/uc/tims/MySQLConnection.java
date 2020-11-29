@@ -32,7 +32,7 @@ public class MySQLConnection {
 		Connection connection = MySQLConnection.establishMySqlConnection();
 		try {
 			prepare = connection.prepareStatement(StaticMembers.sqlQueryForInsertPaymentRow);
-			double initialPayment = 0.0;
+			double initialPayment = 0.00;
 			prepare.setString(1, name);
 			prepare.setString(2, nic);
 			prepare.setString(3, park);

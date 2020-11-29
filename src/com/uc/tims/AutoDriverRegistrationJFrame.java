@@ -47,18 +47,12 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 	private JTextField txtaddress;
 	private JTextField txtnicnumber;
 	private JTextField txtphonenumber;
+	private JTextField txtImageUrl;
 
 	
 	private Driver driver; 
 	private Connection connection; 
 	private PreparedStatement preparedStatement;
-	private ResultSet resultSet;
-
-	private String fileName = null;
-	private int s = 0;
-	private byte[] personImage = null;
-	private ImageIcon format = null;
-	private JTextField txtImageUrl;
 
 	/**
 	 * Launch the application.
@@ -83,7 +77,7 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 	public AutoDriverRegistrationJFrame() {
 		
 		// creating new driver object
-		driver = new Driver();
+		setDriver(new Driver());
 		
 		setTitle("Driver registration form");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
@@ -238,7 +232,7 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 						preparedStatement.setString(5, driver.getAddress());
 						preparedStatement.setString(6, driver.getParkNumber());
 						preparedStatement.setString(7, driver.getPark());
-						preparedStatement.setBytes(8, readFile(driver.getImageUrl()));
+						preparedStatement.setBytes(8, driver.readImageFile(driver.getImageUrl()));
 						preparedStatement.setString(9, driver.getImageUrl());
 						preparedStatement.setString(10, driver.getGsDecision());
 
@@ -255,7 +249,8 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 							// center this JFrame
 							autoDriverRegistrationJFrame.setLocationRelativeTo(null);
 							
-							//MySQLConnection.insertPaymentRow(driver.getName(),driver.getNic(), driver.getPark());
+							// insert a new row for newly registered driver 
+							MySQLConnection.insertPaymentRow(driver.getName(),driver.getNic(), driver.getPark());
 							
 							// dispose the current JFrame
 							dispose();
@@ -266,13 +261,11 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 						try {
 							preparedStatement.close();
 						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 						try {
-							SqliteConnection.establishSqliteConnection().close();
+							connection.close();
 						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 					}
@@ -288,9 +281,16 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 		btnCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// create instance of DashboardJFrame
 				DashboardJFrame dashboardJFrame = new DashboardJFrame();
+				
+				// make it visible 
 				dashboardJFrame.setVisible(true);
+				
+				// center this JFrame 
 				dashboardJFrame.setLocationRelativeTo(null);
+				
+				// dispose current JFrame
 				dispose();
 			}
 		});
@@ -302,6 +302,7 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 		txtwheelno.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
+				// as the key released, we'll set that text in upper case
 				txtwheelno.setText(txtwheelno.getText().toUpperCase());
 			}
 		});
@@ -314,6 +315,7 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 		txtdrivername.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
+				// as the key released, we'll set that text in upper case
 				txtdrivername.setText(txtdrivername.getText().toUpperCase());
 			}
 		});
@@ -326,6 +328,7 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 		txtaddress.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
+				// as the key released, we'll set that text in upper case
 				txtaddress.setText(txtaddress.getText().toUpperCase());
 			}
 		});
@@ -338,6 +341,7 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 		txtnicnumber.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
+				// as the key released, we'll set that text in upper case
 				txtnicnumber.setText(txtnicnumber.getText().toUpperCase());
 			}
 		});
@@ -350,11 +354,10 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 		txtphonenumber.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
+				// allow only digits to be entered 
 				char c = e.getKeyChar();
-
 				if (!((Character.isDigit(c)) || (c == KeyEvent.VK_BACK_SPACE) || (c == KeyEvent.VK_DELETE))) {
 					e.consume();
-
 				}
 
 			}
@@ -371,13 +374,13 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 		btnChoose.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				AutoDriverRegistrationJFrame object = new AutoDriverRegistrationJFrame();
 				JFileChooser chooser = new JFileChooser();
 				chooser.setDialogTitle("Pick the image");
 				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				int response = chooser.showOpenDialog(null);
 				if (response == JFileChooser.APPROVE_OPTION) {
 					File selectedFile = chooser.getSelectedFile();
+					// setting selected image's absolute path to txtImgeUrl textfield
 					txtImageUrl.setText(selectedFile.getAbsolutePath());
 				}
 
@@ -410,53 +413,11 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 		this.preparedStatement = preparedStatement;
 	}
 
-	public ResultSet getResultSet() {
-		return resultSet;
-	}
-
-	public void setResultSet(ResultSet resultSet) {
-		this.resultSet = resultSet;
-	}
-
-	public String getFileName() {
-		return fileName;
-	}
-
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-
-	public byte[] getPersonImage() {
-		return personImage;
-	}
-
-	public void setPersonImage(byte[] personImage) {
-		this.personImage = personImage;
-	}
-
 	public Driver getDriver() {
 		return driver;
 	}
 
 	public void setDriver(Driver driver) {
 		this.driver = driver;
-	}
-
-	static private byte[] readFile(String file) {
-		ByteArrayOutputStream bos = null;
-		try {
-			File f = new File(file);
-			FileInputStream fis = new FileInputStream(f);
-			byte[] buffer = new byte[1024];
-			bos = new ByteArrayOutputStream();
-			for (int len; (len = fis.read(buffer)) != -1;) {
-				bos.write(buffer, 0, len);
-			}
-		} catch (FileNotFoundException e) {
-			System.err.println(e.getMessage());
-		} catch (IOException e2) {
-			System.err.println(e2.getMessage());
-		}
-		return bos != null ? bos.toByteArray() : null;
 	}
 }
