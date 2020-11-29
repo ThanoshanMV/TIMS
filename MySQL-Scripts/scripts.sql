@@ -93,3 +93,5 @@ INSERT INTO employee(roleid, name, username, nic, email, job, password) VALUES
 (1,"Urban Council","Hatton-UC","971245637V","mvthanoshan@gmail.com","Assistant","2019");
 
 SELECT * FROM employee;
+
+SELECT * FROM driver;

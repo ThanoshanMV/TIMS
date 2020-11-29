@@ -222,36 +222,49 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 					JOptionPane.showMessageDialog(null, "Please add a valid driver image");
 				} 
 				else {
-					PreparedStatement ps = null;
 					try {
-						ps = SqliteConnection.establishSqliteConnection()
-								.prepareStatement(StaticMembers.sqlQueryForDriverRegistration);
-						ps.setString(1, driver.getPark());
-						ps.setString(2, driver.getParkNumber());
-						ps.setString(3, driver.getWheelNumber());
-						ps.setString(4, driver.getName());
-						ps.setString(5, driver.getAddress());
-						ps.setString(6, driver.getNic());
-						ps.setString(7, driver.getPhoneNumber());
-						ps.setString(8, driver.getGsDecision());
-						ps.setBytes(9, readFile(driver.getImageUrl()));
-						ps.setString(10, driver.getImageUrl());
+						// establishing MySQL connection
+						connection = MySQLConnection.establishMySqlConnection();
+						
+						// creating prepared statement to execute parameterized query
+						preparedStatement = connection.prepareStatement(StaticMembers.sqlQueryForDriverRegistration);
+						
+						// setting vales using PreparedStatement's setter methods 
+						// preparedStatement.setString(1, driver.getPaymentId());
+						preparedStatement.setString(1, driver.getName());
+						preparedStatement.setString(2, driver.getNic());
+						preparedStatement.setString(3, driver.getPhoneNumber());
+						preparedStatement.setString(4, driver.getWheelNumber());
+						preparedStatement.setString(5, driver.getAddress());
+						preparedStatement.setString(6, driver.getParkNumber());
+						preparedStatement.setString(7, driver.getPark());
+						preparedStatement.setBytes(8, readFile(driver.getImageUrl()));
+						preparedStatement.setString(9, driver.getImageUrl());
+						preparedStatement.setString(10, driver.getGsDecision());
 
-						if (ps.executeUpdate() > 0) {
+						// executeUpdate() returns either (1) the row count for SQL Data Manipulation Language (DML) statements or (2) 0 for SQL statements that return nothing
+						if (preparedStatement.executeUpdate() > 0) {
 							JOptionPane.showMessageDialog(null, "Auto Driver Registration Successful!");
-							AutoDriverRegistrationJFrame obj = new AutoDriverRegistrationJFrame();
-							obj.setVisible(true);
-							obj.setLocationRelativeTo(null);
-							SqliteConnection.insertPaymentRow(driver.getPark(), driver.getName(),
-									driver.getNic());
+							
+							// create instance of AdminHandeledJFrame
+							AutoDriverRegistrationJFrame autoDriverRegistrationJFrame = new AutoDriverRegistrationJFrame();
+							
+							// make it visible 
+							autoDriverRegistrationJFrame.setVisible(true);
+							
+							// center this JFrame
+							autoDriverRegistrationJFrame.setLocationRelativeTo(null);
+							
+							//MySQLConnection.insertPaymentRow(driver.getName(),driver.getNic(), driver.getPark());
+							
+							// dispose the current JFrame
 							dispose();
 						}
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						JOptionPane.showMessageDialog(null, "Error while establishing connection.");
+						JOptionPane.showMessageDialog(null, e1);
 					} finally {
 						try {
-							ps.close();
+							preparedStatement.close();
 						} catch (SQLException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
