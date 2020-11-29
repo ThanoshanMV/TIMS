@@ -61,7 +61,9 @@ CREATE TABLE driver (
     address VARCHAR(255),
     parkno VARCHAR(255),
 	park VARCHAR(10),
-    images BLOB,
+    # BLOB datatype was not enough for images. So, changing it to MEDIUMBLOB
+    # TINYBLOB ≈ 255 bytes, BLOB ≈ 64KB, MEDIUMBLOB ≈ 16MB and LONGBLOB ≈ 4GB
+    images MEDIUMBLOB,
     imageurl VARCHAR(255),
     gs VARCHAR(10),
     
