@@ -79,4 +79,17 @@ CREATE TABLE employee_driver (
     FOREIGN KEY (driverid) REFERENCES driver(id)
 );
 
-DROP DATABASE tims;
+# DROP DATABASE tims;
+
+# insert details into role table TO BE EXECUTED!!
+INSERT INTO role VALUES
+(1, "admin"),
+(2, "user");
+
+SELECT * FROM role; 
+
+# insert admin details into the system
+INSERT INTO employee(roleid, name, username, nic, email, job, password) VALUES
+(1,"Urban Council","Hatton-UC","971245637V","mvthanoshan@gmail.com","Assistant","2019");
+
+SELECT * FROM employee;
