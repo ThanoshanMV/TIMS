@@ -5,6 +5,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import com.uc.tims.entity.Employee;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -12,7 +14,10 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
+
+import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.awt.Font;
 import java.awt.Toolkit;
@@ -29,11 +34,10 @@ public class UserRegistrationJFrame extends JFrame {
 	private JTextField txtnic;
 	private JTextField txtuc;
 	private JPasswordField txtpassword;
-	private String name;
-	private String username;
-	private String nic;
-	private String uc;
-	private String password;
+	
+	private Employee employee; 
+	private Connection connection; 
+	private PreparedStatement preparedStatement;
 
 	/**
 	 * Launch the application.
@@ -56,7 +60,10 @@ public class UserRegistrationJFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public UserRegistrationJFrame() {
-
+		
+		// set new employee instance 
+		setEmployee(new Employee());
+		
 		setTitle("User registration form");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
 
@@ -88,14 +95,9 @@ public class UserRegistrationJFrame extends JFrame {
 		lblPassword.setBounds(39, 244, 86, 34);
 		contentPane.add(lblPassword);
 
-		JLabel lblNicNumber = new JLabel("NIC Number");
-		lblNicNumber.setFont(new Font("Dialog", Font.BOLD, 15));
-		lblNicNumber.setBounds(39, 294, 103, 34);
-		contentPane.add(lblNicNumber);
-
 		JLabel lblUcPosition = new JLabel("UC Position\n");
 		lblUcPosition.setFont(new Font("Dialog", Font.BOLD, 15));
-		lblUcPosition.setBounds(39, 347, 123, 34);
+		lblUcPosition.setBounds(39, 363, 123, 34);
 		contentPane.add(lblUcPosition);
 
 		txtname = new JTextField();
@@ -116,14 +118,14 @@ public class UserRegistrationJFrame extends JFrame {
 		txtnic.setHorizontalAlignment(SwingConstants.LEFT);
 		txtnic.setFont(new Font("Dialog", Font.BOLD, 15));
 		txtnic.setColumns(10);
-		txtnic.setBounds(237, 298, 177, 27);
+		txtnic.setBounds(237, 310, 177, 27);
 		contentPane.add(txtnic);
 
 		txtuc = new JTextField();
 		txtuc.setHorizontalAlignment(SwingConstants.LEFT);
 		txtuc.setFont(new Font("Dialog", Font.BOLD, 15));
 		txtuc.setColumns(10);
-		txtuc.setBounds(237, 351, 177, 27);
+		txtuc.setBounds(237, 367, 177, 27);
 		contentPane.add(txtuc);
 
 		JButton btnSubmit = new JButton("Submit");
@@ -132,68 +134,76 @@ public class UserRegistrationJFrame extends JFrame {
 		btnSubmit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				UserRegistrationJFrame userRegistrationObject = new UserRegistrationJFrame();
-				userRegistrationObject.setName(txtname.getText());
-				userRegistrationObject.setUsername(txtuname.getText());
-				userRegistrationObject.setPassword(String.valueOf(txtpassword.getPassword()));
-				userRegistrationObject.setNic(txtnic.getText());
-				userRegistrationObject.setUc(txtuc.getText());
+				employee.setName(txtname.getText());
+				employee.setUserName(txtuname.getText());
+				employee.setPassword(String.valueOf(txtpassword.getPassword()));
+				employee.setNic(txtnic.getText());
+				employee.setJob(txtuc.getText());
 
-				if (userRegistrationObject.getName().equals("")) {
+				if (employee.getName().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid name!");
-				} else if (UserExistenceTIMS.isNameExist(userRegistrationObject.getName())) {
+				} else if (UserExistenceTIMS.isNameExist(employee.getName())) {
 					JOptionPane.showMessageDialog(null, "Sorry, name has already taken!");
 				}
 
-				else if (userRegistrationObject.getUsername().equals("")) {
+				else if (employee.getUserName().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid username!");
 				}
 
-				else if (UserExistenceTIMS.isUserNameExist(userRegistrationObject.getUsername())) {
+				else if (UserExistenceTIMS.isUserNameExist(employee.getUserName())) {
 					JOptionPane.showMessageDialog(null, "Sorry, username has already taken!");
-				} else if (userRegistrationObject.getPassword().equals("")) {
+				} else if (employee.getPassword().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid password!");
-				} else if (userRegistrationObject.getNic().equals("")) {
+				} else if (employee.getNic().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid nic!");
-				} else if (!((userRegistrationObject.getNic().length() == 10)
-						|| (userRegistrationObject.getNic().length() == 12))) {
+				} else if (!((employee.getNic().length() == 10)
+						|| (employee.getNic().length() == 12))) {
 					JOptionPane.showMessageDialog(null, "Sorry, Check NIC length!");
-				} else if (userRegistrationObject.getUc().equals("")) {
+				} else if (employee.getJob().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid UC position!");
 				} else {
-
-					PreparedStatement ps = null;
-
 					try {
-						ps = SqliteConnection.establishSqliteConnection()
-								.prepareStatement(StaticMembers.sqlQueryForUserRegistration);
-						ps.setString(1, userRegistrationObject.getName());
-						ps.setString(2, userRegistrationObject.getUsername());
-						ps.setString(3, userRegistrationObject.getPassword());
-						ps.setString(4, userRegistrationObject.getNic());
-						ps.setString(5, userRegistrationObject.getUc());
+						// establishing MySQL connection
+						connection = MySQLConnection.establishMySqlConnection();
+						
+						// creating prepared statement to execute parameterized query
+						preparedStatement = connection.prepareStatement(StaticMembers.sqlQueryForUserRegistration);
 
-						if (ps.executeUpdate() > 0) {
+						// setting vales using PreparedStatement's setter methods 
+						// registering for user, his (user) role id is 2 
+						preparedStatement.setInt(1, 2);
+						preparedStatement.setString(2, employee.getName());
+						preparedStatement.setString(3, employee.getUserName());
+						preparedStatement.setString(4, employee.getNic());
+						preparedStatement.setString(5, employee.getJob());
+						preparedStatement.setString(6, employee.getPassword());
+						
+						// executeUpdate() returns either (1) the row count for SQL Data Manipulation Language (DML) statements or (2) 0 for SQL statements that return nothing
+						if (preparedStatement.executeUpdate() > 0) {
 							JOptionPane.showMessageDialog(null, "User Registration Successful!");
+							// create instance of AdminHandeledJFrame
 							AdminHandeledJFrame adminHandeledJFrame = new AdminHandeledJFrame();
+							
+							// make it visible 
 							adminHandeledJFrame.setVisible(true);
+							
+							// center this JFrame
 							adminHandeledJFrame.setLocationRelativeTo(null);
+							
+							// dispose the current JFrame
 							dispose();
 						}
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						JOptionPane.showMessageDialog(null, "Error while establishing connection.");
+						JOptionPane.showMessageDialog(null, e1);
 					} finally {
 						try {
-							ps.close();
+							preparedStatement.close();
 						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 						try {
-							SqliteConnection.establishSqliteConnection().close();
+							connection.close();
 						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 					}
@@ -224,47 +234,34 @@ public class UserRegistrationJFrame extends JFrame {
 		});
 		btnBack.setBounds(39, 443, 114, 34);
 		contentPane.add(btnBack);
+		
+		JLabel label = new JLabel("NIC Number");
+		label.setFont(new Font("Dialog", Font.BOLD, 15));
+		label.setBounds(39, 306, 103, 34);
+		contentPane.add(label);
 	}
 
-	@Override
-	public String getName() {
-		return name;
+	public Employee getEmployee() {
+		return employee;
 	}
 
-	@Override
-	public void setName(String name) {
-		this.name = name;
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
 	}
 
-	public String getUsername() {
-		return username;
+	public Connection getConnection() {
+		return connection;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setConnection(Connection connection) {
+		this.connection = connection;
 	}
 
-	public String getNic() {
-		return nic;
+	public PreparedStatement getPreparedStatement() {
+		return preparedStatement;
 	}
 
-	public void setNic(String nic) {
-		this.nic = nic;
-	}
-
-	public String getUc() {
-		return uc;
-	}
-
-	public void setUc(String uc) {
-		this.uc = uc;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
+	public void setPreparedStatement(PreparedStatement preparedStatement) {
+		this.preparedStatement = preparedStatement;
 	}
 }

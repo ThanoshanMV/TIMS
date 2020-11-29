@@ -19,7 +19,7 @@ CREATE TABLE employee (
     name VARCHAR(255),
     username VARCHAR(255),
     nic VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
+    email VARCHAR(255),
     job VARCHAR(255),
     password VARCHAR(255),
     
@@ -97,3 +97,5 @@ INSERT INTO employee(roleid, name, username, nic, email, job, password) VALUES
 SELECT * FROM employee;
 
 SELECT * FROM driver;
+
+SELECT * FROM role;
