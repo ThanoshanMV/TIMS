@@ -5,6 +5,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import com.uc.tims.entity.Employee;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -12,6 +15,7 @@ import javax.swing.WindowConstants;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,8 +31,11 @@ public class AdminLoginJFrame extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtuname;
 	private JPasswordField txtpassword;
-	private String username;
-	private String password;
+	
+	private Employee employee;
+	private Connection connection; 
+	private PreparedStatement preparedStatement;
+	private ResultSet resultSet;
 
 	/**
 	 * Launch the application.
@@ -51,6 +58,10 @@ public class AdminLoginJFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public AdminLoginJFrame() {
+		
+		// creating Employee object
+		employee = new Employee();
+		
 		setTitle("Admin login page");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
 
@@ -101,58 +112,77 @@ public class AdminLoginJFrame extends JFrame {
 		btnLogin.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				AdminLoginJFrame object1 = new AdminLoginJFrame();
-				object1.setUsername(txtuname.getText());
-				object1.setPassword(String.valueOf(txtpassword.getPassword()));
-
-				PreparedStatement ps = null;
-				ResultSet rs = null;
+				employee.setUserName(txtuname.getText());
+				employee.setPassword(String.valueOf(txtpassword.getPassword()));
 
 				try {
-					ps = SqliteConnection.establishSqliteConnection()
-							.prepareStatement(StaticMembers.sqlQueryForAdminLogIn);
-					ps.setString(1, object1.getUsername());
-					ps.setString(2, object1.getPassword());
-					rs = ps.executeQuery();
-					System.out.println("Username is " + object1.getUsername());
-					System.out.println("Password is " + object1.getPassword());
-					if (rs.next()) {
+					// establishing MySQL connection
+					connection = MySQLConnection.establishMySqlConnection();
+					
+					// creating prepared statement to execute parameterized query
+					preparedStatement = connection.prepareStatement(StaticMembers.sqlQueryForAdminLogIn);
+					
+					// setting vales using PreparedStatement's setter methods 
+					preparedStatement.setString(1, employee.getUserName());
+					preparedStatement.setString(2, employee.getPassword());
+					
+					// execute the selected query and return an instance of ResultSet
+					resultSet = preparedStatement.executeQuery();
+					
+					// printing them for help
+					System.out.println("Username is " + employee.getUserName());
+					System.out.println("Password is " + employee.getPassword());
+					
+					// resultSet.next() returns true if the new current row is valid otherwise false if there are no more rows
+					if (resultSet.next()) {
+						// valid row from query is available!
 						JOptionPane.showMessageDialog(null, "Login successful");
-						StaticMembers.name = rs.getString("USERNAME");
+						
+						// getting username column value for this specified row 
+						StaticMembers.name = resultSet.getString("username");
+						
+						// setting adminLoggenin as true becaouse of admin's login was success
 						StaticMembers.adminLoggedin = true;
+						
+						// create instance of AdminHandeledJFrame
 						AdminHandeledJFrame adminHandeledJFrame = new AdminHandeledJFrame();
+						
+						// make it visible 
 						adminHandeledJFrame.setVisible(true);
+						
+						// center this JFrame
 						adminHandeledJFrame.setLocationRelativeTo(null);
+						
+						// dispose the current JFrame
 						dispose();
-					} else {
+					} 
+					else {
+						// no valid row for that query is available!
 						JOptionPane.showMessageDialog(null, "Check Username or Password.");
 					}
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(null, "Error while establishing connection.");
 				} finally {
 					try {
-						ps.close();
+						resultSet.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					try {
-						rs.close();
+						preparedStatement.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					try {
-						SqliteConnection.establishSqliteConnection().close();
+						connection.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				}
 
 			}
 		});
+		
 		btnLogin.setBounds(291, 336, 121, 37);
 		contentPane.add(btnLogin);
 
@@ -164,9 +194,16 @@ public class AdminLoginJFrame extends JFrame {
 		btnBack.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// create instance of StartJFrame
 				StartJFrame startJFrameObject = new StartJFrame();
+				
+				// make it visible 
 				startJFrameObject.setVisible(true);
+				
+				// center this JFrame 
 				startJFrameObject.setLocationRelativeTo(null);
+				
+				// dispose current (AdminLoginJFrame)
 				dispose();
 			}
 		});
@@ -174,19 +211,29 @@ public class AdminLoginJFrame extends JFrame {
 		contentPane.add(btnBack);
 	}
 
-	public String getUsername() {
-		return username;
+	public Connection getConnection() {
+		return connection;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setConnection(Connection connection) {
+		this.connection = connection;
 	}
 
-	public String getPassword() {
-		return password;
+	public PreparedStatement getPreparedStatement() {
+		return preparedStatement;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setPreparedStatement(PreparedStatement preparedStatement) {
+		this.preparedStatement = preparedStatement;
 	}
+
+	public ResultSet getResultSet() {
+		return resultSet;
+	}
+
+	public void setResultSet(ResultSet resultSet) {
+		this.resultSet = resultSet;
+	}
+	
+
 }

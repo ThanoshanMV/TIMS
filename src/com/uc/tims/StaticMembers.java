@@ -33,7 +33,7 @@ public class StaticMembers {
 	static double y22 = 0;
 	static double total = 0;
 
-	static String sqlQueryForAdminLogIn = "SELECT * FROM `ADMIN` WHERE `USERNAME`= ? AND `PASSWORD`= ?";
+	static String sqlQueryForAdminLogIn = "SELECT * FROM `employee` WHERE `username`= ? AND `password`= ?";
 	static String sqlQueryForUserRegistration = "INSERT INTO `USER`(`NAME`,`USERNAME`,`PASSWORD`,`NIC`,`UC`) VALUES (?,?,?,?,?)";
 	static String sqlQueryForUserLogIn = "SELECT * FROM `USER` WHERE `USERNAME`= ? AND `PASSWORD`= ?";
 	static String sqlQueryForDriverRegistration = "INSERT INTO `DRIVER`(`PARK`,`PARK NO`,`WHEEL NO`,`DRIVER NAME`,`ADDRESS`,`NIC NUMBER`,`PHONE NUMBER`,`GS` ,`IMAGES` ,'IMAGEURL') VALUES (?,?,?,?,?,?,?,?,?,?)";

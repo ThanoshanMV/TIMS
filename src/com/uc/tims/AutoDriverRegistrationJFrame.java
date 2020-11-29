@@ -6,12 +6,16 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import com.uc.tims.entity.Driver;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
@@ -44,15 +48,11 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 	private JTextField txtnicnumber;
 	private JTextField txtphonenumber;
 
-	private String park;
-	private String parkno;
-	private String wheelno;
-	private String drivername;
-	private String address;
-	private String nic;
-	private String phonenumber;
-	private String gs;
-	private String imageURL;
+	
+	private Driver driver; 
+	private Connection connection; 
+	private PreparedStatement preparedStatement;
+	private ResultSet resultSet;
 
 	private String fileName = null;
 	private int s = 0;
@@ -81,7 +81,10 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public AutoDriverRegistrationJFrame() {
-
+		
+		// creating new driver object
+		driver = new Driver();
+		
 		setTitle("Driver registration form");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
 
@@ -98,6 +101,7 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 		txtparkno.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
+				// as the key released, we'll set that text in upper case
 				txtparkno.setText(txtparkno.getText().toUpperCase());
 			}
 		});
@@ -111,10 +115,11 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 		comboBoxParkName.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// selected combo box item will be set into park number text
 				txtparkno.setText((String) comboBoxParkName.getSelectedItem());
 			}
 		});
-		comboBoxParkName.setModel(new DefaultComboBoxModel(new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "DA", "DB", "DC", "DD", "DE", "DF", "DG", "DH"}));
+		comboBoxParkName.setModel(new DefaultComboBoxModel(driver.getAvailableparks()));
 		comboBoxParkName.setBounds(329, 82, 133, 24);
 		contentPane.add(comboBoxParkName);
 
@@ -175,73 +180,70 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 		btnRegister.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				AutoDriverRegistrationJFrame object = new AutoDriverRegistrationJFrame();
-				object.setPark((String) comboBoxParkName.getSelectedItem());
-				object.setParkno(txtparkno.getText());
-				object.setWheelno(txtwheelno.getText());
-				object.setDrivername(txtdrivername.getText());
-				object.setAddress(txtaddress.getText());
-				object.setNic(txtnicnumber.getText());
-				object.setPhonenumber(txtphonenumber.getText());
-				object.setGs((String) comboBoxGs.getSelectedItem());
-				object.setImageURL(txtImageUrl.getText());
+				driver.setPark((String) comboBoxParkName.getSelectedItem());
+				driver.setParkNumber(txtparkno.getText());
+				driver.setWheelNumber(txtwheelno.getText());
+				driver.setName(txtdrivername.getText());
+				driver.setAddress(txtaddress.getText());
+				driver.setNic(txtnicnumber.getText());
+				driver.setPhoneNumber(txtphonenumber.getText());
+				driver.setGsDecision((String) comboBoxGs.getSelectedItem());
+				driver.setImageUrl(txtImageUrl.getText());
 
-				if (object.getParkno().equals("")) {
+				if (driver.getParkNumber().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid park no!");
-				} else if (DriverExistenceTIMS.isParkNoExist(object.getParkno())) {
+				} else if (DriverExistenceTIMS.isParkNoExist(driver.getParkNumber())) {
 					JOptionPane.showMessageDialog(null, "Sorry, Park Number has already taken!");
 				}
-
-				else if (object.getWheelno().equals("")) {
+				else if (driver.getWheelNumber().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid wheel no!");
 				}
-
-				else if (DriverExistenceTIMS.isWheelNO(object.getWheelno())) {
+				else if (DriverExistenceTIMS.isWheelNO(driver.getWheelNumber())) {
 					JOptionPane.showMessageDialog(null, "Sorry, Wheel Number has already taken!");
-				} else if (object.getDrivername().equals("")) {
+				} else if (driver.getName().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid driver name!");
-				} else if (DriverExistenceTIMS.isName(object.getDrivername())) {
+				} else if (DriverExistenceTIMS.isName(driver.getName())) {
 					JOptionPane.showMessageDialog(null, "Sorry, Driver Name has already taken!");
-				} else if (object.getAddress().equals("")) {
+				} else if (driver.getAddress().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid address!");
-				} else if (object.getNic().equals("")) {
+				} else if (driver.getNic().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid nic number!");
-				} else if (DriverExistenceTIMS.isNIC(object.getNic())) {
+				} else if (DriverExistenceTIMS.isNIC(driver.getNic())) {
 					JOptionPane.showMessageDialog(null, "Sorry, NIC has already taken!");
-				} else if (!((object.getNic().length() == 10) || (object.getNic().length() == 12))) {
+				} else if (!((driver.getNic().length() == 10) || (driver.getNic().length() == 12))) {
 					JOptionPane.showMessageDialog(null, "Sorry, Check NIC length!");
-				} else if (object.getPhonenumber().equals("")) {
+				} else if (driver.getPhoneNumber().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid phone number!");
-				} else if (!(object.getPhonenumber().length() == 10)) {
+				} else if (!(driver.getPhoneNumber().length() == 10)) {
 					JOptionPane.showMessageDialog(null, "Phone number should be in 10 characters!");
-				} else if (object.getGs().equals("")) {
+				} else if (driver.getGsDecision().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid GS information : OK or NO");
-				} else if (object.getImageURL().equals("")) {
+				} else if (driver.getImageUrl().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid driver image");
-				} else {
-
+				} 
+				else {
 					PreparedStatement ps = null;
 					try {
 						ps = SqliteConnection.establishSqliteConnection()
 								.prepareStatement(StaticMembers.sqlQueryForDriverRegistration);
-						ps.setString(1, object.getPark());
-						ps.setString(2, object.getParkno());
-						ps.setString(3, object.getWheelno());
-						ps.setString(4, object.getDrivername());
-						ps.setString(5, object.getAddress());
-						ps.setString(6, object.getNic());
-						ps.setString(7, object.getPhonenumber());
-						ps.setString(8, object.getGs());
-						ps.setBytes(9, readFile(object.getImageURL()));
-						ps.setString(10, object.getImageURL());
+						ps.setString(1, driver.getPark());
+						ps.setString(2, driver.getParkNumber());
+						ps.setString(3, driver.getWheelNumber());
+						ps.setString(4, driver.getName());
+						ps.setString(5, driver.getAddress());
+						ps.setString(6, driver.getNic());
+						ps.setString(7, driver.getPhoneNumber());
+						ps.setString(8, driver.getGsDecision());
+						ps.setBytes(9, readFile(driver.getImageUrl()));
+						ps.setString(10, driver.getImageUrl());
 
 						if (ps.executeUpdate() > 0) {
 							JOptionPane.showMessageDialog(null, "Auto Driver Registration Successful!");
 							AutoDriverRegistrationJFrame obj = new AutoDriverRegistrationJFrame();
 							obj.setVisible(true);
 							obj.setLocationRelativeTo(null);
-							SqliteConnection.insertPaymentRow(object.getPark(), object.getDrivername(),
-									object.getNic());
+							SqliteConnection.insertPaymentRow(driver.getPark(), driver.getName(),
+									driver.getNic());
 							dispose();
 						}
 					} catch (SQLException e1) {
@@ -379,68 +381,28 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 
 	}
 
-	public String getPark() {
-		return park;
+	public Connection getConnection() {
+		return connection;
 	}
 
-	public void setPark(String park) {
-		this.park = park;
+	public void setConnection(Connection connection) {
+		this.connection = connection;
 	}
 
-	public String getParkno() {
-		return parkno;
+	public PreparedStatement getPreparedStatement() {
+		return preparedStatement;
 	}
 
-	public void setParkno(String parkno) {
-		this.parkno = parkno;
+	public void setPreparedStatement(PreparedStatement preparedStatement) {
+		this.preparedStatement = preparedStatement;
 	}
 
-	public String getWheelno() {
-		return wheelno;
+	public ResultSet getResultSet() {
+		return resultSet;
 	}
 
-	public void setWheelno(String wheelno) {
-		this.wheelno = wheelno;
-	}
-
-	public String getDrivername() {
-		return drivername;
-	}
-
-	public void setDrivername(String drivername) {
-		this.drivername = drivername;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public String getNic() {
-		return nic;
-	}
-
-	public void setNic(String nic) {
-		this.nic = nic;
-	}
-
-	public String getPhonenumber() {
-		return phonenumber;
-	}
-
-	public void setPhonenumber(String phonenumber) {
-		this.phonenumber = phonenumber;
-	}
-
-	public String getGs() {
-		return gs;
-	}
-
-	public void setGs(String gs) {
-		this.gs = gs;
+	public void setResultSet(ResultSet resultSet) {
+		this.resultSet = resultSet;
 	}
 
 	public String getFileName() {
@@ -459,12 +421,12 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 		this.personImage = personImage;
 	}
 
-	public String getImageURL() {
-		return imageURL;
+	public Driver getDriver() {
+		return driver;
 	}
 
-	public void setImageURL(String imageURL) {
-		this.imageURL = imageURL;
+	public void setDriver(Driver driver) {
+		this.driver = driver;
 	}
 
 	static private byte[] readFile(String file) {

@@ -68,11 +68,18 @@ public class AdminHandeledJFrame extends JFrame {
 		btnAddUser.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// create instance of UserRegistrationJFrame
 				UserRegistrationJFrame userRegistrationJFrameObject = new UserRegistrationJFrame();
+				
+				// make it visible 
 				userRegistrationJFrameObject.setVisible(true);
+				
+				// center this JFrame 
 				userRegistrationJFrameObject.setLocationRelativeTo(null);
+				
+				// dispose current JFrame
 				dispose();
-				SqliteConnection.createUserTable();
+				// SqliteConnection.createUserTable();
 			}
 		});
 		btnAddUser.setBounds(86, 198, 114, 36);
@@ -84,9 +91,16 @@ public class AdminHandeledJFrame extends JFrame {
 		btnAccess.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// create instance of DashboardJFrame
 				DashboardJFrame dashboardJFrame = new DashboardJFrame();
+				
+				// make it visible 
 				dashboardJFrame.setVisible(true);
+				
+				// center this JFrame 
 				dashboardJFrame.setLocationRelativeTo(null);
+				
+				// dispose current JFrame
 				dispose();
 
 			}
@@ -99,9 +113,16 @@ public class AdminHandeledJFrame extends JFrame {
 		lblLogout.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				// create instance of StartJFrame
 				StartJFrame startJFrameObject = new StartJFrame();
+				
+				// make it visible 
 				startJFrameObject.setVisible(true);
+				
+				// center this JFrame 
 				startJFrameObject.setLocationRelativeTo(null);
+				
+				// dispose current JFrame
 				dispose();
 			}
 		});

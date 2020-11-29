@@ -10,13 +10,17 @@ public class Driver extends Person {
 	private int paymentId;
 	private String wheelNumber;
 	private String address;
-	private char park;
+	private String park;
 	private String parkNumber;
-	private int phoneNumber;
+	private String phoneNumber;
 	private String gsDecision;
 	private String imageUrl;
 	private byte[] image;
+	private String[] availableParks; 
 	
+	public Driver() {
+		availableParks = new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "DA", "DB", "DC", "DD", "DE", "DF", "DG", "DH"};
+	}
 	
 	public byte[] readImageFile(String file) {
 		ByteArrayOutputStream bos = null;
@@ -55,10 +59,10 @@ public class Driver extends Person {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	public char getPark() {
+	public String getPark() {
 		return park;
 	}
-	public void setPark(char park) {
+	public void setPark(String park) {
 		this.park = park;
 	}
 	public String getParkNumber() {
@@ -67,10 +71,10 @@ public class Driver extends Person {
 	public void setParkNumber(String parkNumber) {
 		this.parkNumber = parkNumber;
 	}
-	public int getPhoneNumber() {
+	public String getPhoneNumber() {
 		return phoneNumber;
 	}
-	public void setPhoneNumber(int phoneNumber) {
+	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 	public String getGsDecision() {
@@ -90,7 +94,11 @@ public class Driver extends Person {
 	}
 	public void setImage(byte[] image) {
 		this.image = image;
+	}
+	public String[] getAvailableparks() {
+		return availableParks;
+	}
+	public void setAvailableParks(String[] availableParks) {
+		this.availableParks = availableParks;
 	} 
-	
-	
 }
