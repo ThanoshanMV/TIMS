@@ -19,6 +19,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -48,9 +49,13 @@ public class SearchJFrame extends JFrame {
 	private JTable table;
 	private int row;
 	private String tableClick;
-	static String text;
-	static String comboBoxSelection;
+	private static String comboBoxSelection;
 	private JTextField txtCount;
+	
+	private ResultSet resultSet = null;
+	private PreparedStatement preparedStatement = null;
+	private Connection connection = null;
+	private String searchBy;
 
 	/**
 	 * Launch the application.
@@ -106,7 +111,7 @@ public class SearchJFrame extends JFrame {
 
 		JComboBox comboBoxSearch = new JComboBox();
 		comboBoxSearch.setFont(new Font("Dialog", Font.BOLD, 15));
-		comboBoxSearch.setModel(new DefaultComboBoxModel(new String[] { "PARK", "NIC NUMBER" }));
+		comboBoxSearch.setModel(new DefaultComboBoxModel(new String[] { "park", "nic" }));
 		comboBoxSearch.setBounds(12, 61, 207, 30);
 		contentPane.add(comboBoxSearch);
 
@@ -132,25 +137,44 @@ public class SearchJFrame extends JFrame {
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				ResultSet rs1 = null;
-				PreparedStatement ps1 = null;
-
 				try {
-					SearchJFrame object = new SearchJFrame();
-					object.setRow(table.getSelectedRow());
-					object.setTableClick(table.getModel().getValueAt(object.getRow(), 1).toString());
-					StaticMembers.searchParkNoDelete = object.getTableClick();
-					String sql1 = "SELECT * FROM `DRIVER` WHERE `PARK NO`= '" + object.getTableClick() + "'";
-					ps1 = SqliteConnection.establishSqliteConnection().prepareStatement(sql1);
-					rs1 = ps1.executeQuery();
+					// creating SearchJFrame object
+					SearchJFrame searchJFrame = new SearchJFrame();
+					
+					// set the row 
+					searchJFrame.setRow(table.getSelectedRow());
+					
+					// get clicked park number in the JTable and set to TableClick
+					searchJFrame.setTableClick(table.getModel().getValueAt(searchJFrame.getRow(), 1).toString());
+					
+					// establishing MySQL connection
+					connection = MySQLConnection.establishMySqlConnection();
+					
+					// creating prepared statement to execute parameterized query
+					preparedStatement = connection.prepareStatement(MySQLQuery.getSqlQueryForSelectDriverDetailsForSearchOperartion());
+					
+					// setting parkno value using PreparedStatement's setter methods 
+					preparedStatement.setString(1, searchJFrame.getTableClick());
+					
+					// execute the selected query and return an instance of ResultSet
+					resultSet = preparedStatement.executeQuery();
 					
 					
-					if (rs1.next()) {
-						byte[] imageData = rs1.getBytes("IMAGES");
+					if (resultSet.next()) {
+						// get image from database as byte array
+						byte[] imageData = resultSet.getBytes("images");
+						
+						// creating ImageIcon object using that byte array 
 						ImageIcon iconThatCreatedFromBytes = new ImageIcon(imageData);
-						Image img1 = iconThatCreatedFromBytes.getImage();
+						
+						// creating image object using ImageIcon
+						Image image = iconThatCreatedFromBytes.getImage();
+						
+						// creating SCALED ImageIcon using image object
 						ImageIcon icon = new ImageIcon(
-								ScaledImage(img1, driverImage.getWidth(), driverImage.getHeight()));
+								ScaledImage(image, driverImage.getWidth(), driverImage.getHeight()));
+						
+						// setting this ImageIcon to placeholder in our SearchJFrame
 						driverImage.setIcon(icon);
 					}
 
@@ -158,21 +182,18 @@ public class SearchJFrame extends JFrame {
 					JOptionPane.showMessageDialog(null, e2);
 				} finally {
 					try {
-						ps1.close();
+						preparedStatement.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					try {
-						rs1.close();
+						resultSet.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					try {
-						SqliteConnection.establishSqliteConnection().close();
+						connection.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				}
@@ -190,9 +211,16 @@ public class SearchJFrame extends JFrame {
 		btnBack.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// create instance of DashboardJFrame
 				DashboardJFrame dashboardJFrame = new DashboardJFrame();
+				
+				// make it visible 
 				dashboardJFrame.setVisible(true);
+				
+				// center this JFrame
 				dashboardJFrame.setLocationRelativeTo(null);
+				
+				// dispose the current JFrame
 				dispose();
 			}
 		});
@@ -205,49 +233,59 @@ public class SearchJFrame extends JFrame {
 		txtsearch.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-
+				
+				// as the key released, we convert it to uppercase
 				txtsearch.setText(txtsearch.getText().toUpperCase());
-
-				PreparedStatement ps = null;
-				ResultSet rs = null;
-
+				
 				try {
-					String selection = (String) comboBoxSearch.getSelectedItem();
-					comboBoxSelection = selection;
-					System.out.println(comboBoxSelection);
-					String query = "SELECT `PARK`,`PARK NO`,`WHEEL NO`,`DRIVER NAME`,`ADDRESS`,`NIC NUMBER`,`PHONE NUMBER`,`GS` FROM `DRIVER` WHERE `"
-							+ comboBoxSelection + "` LIKE ?";
-					ps = SqliteConnection.establishSqliteConnection().prepareStatement(query);
-					ps.setString(1, "%" + txtsearch.getText() + "%");
-					text = txtsearch.getText();
-					rs = ps.executeQuery();
+					
+					// assigning search by 
+					setSearchBy((String) comboBoxSearch.getSelectedItem());
 
-					table.setModel(DbUtils.resultSetToTableModel(rs));
+					System.out.println(getSearchBy());
+					
+					// establish MySQL connection
+					setConnection(MySQLConnection.establishMySqlConnection());
+					
+					String query = "SELECT `park`,`parkno`,`wheelno`,`name`,`address`,`nic`,`phoneno`,`gs` FROM `driver` WHERE `" + getSearchBy() + "` LIKE ?";
+
+					// creating prepared statement to execute parameterized query
+					preparedStatement = getConnection().prepareStatement(query);
+					
+					// setting vales using PreparedStatement's setter methods 
+					// preparedStatement.setString(1, getSearchBy());
+					preparedStatement.setString(1, "%" + txtsearch.getText() + "%");
+					
+					// execute the selected query and return an instance of ResultSet
+					resultSet = preparedStatement.executeQuery();
+
+					// set that resultSet to the table 
+					table.setModel(DbUtils.resultSetToTableModel(resultSet));
 
 					SearchJFrame.setJTableColumnsWidth(table, 1024, 5, 5, 10, 20, 30, 15, 15, 5);
+					
+					// initially load TIMS logo as image placeholder
 					driverImage.setIcon(iconDefault);
+					
+					// initially set number of rows count to 0
 					txtCount.setText("0");
 
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} finally {
 					try {
-						ps.close();
+						preparedStatement.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					try {
-						rs.close();
+						resultSet.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					try {
-						SqliteConnection.establishSqliteConnection().close();
+						getConnection().close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				}
@@ -261,68 +299,99 @@ public class SearchJFrame extends JFrame {
 		btnDelete.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				// confirming on delete operation
 				int p = JOptionPane.showConfirmDialog(null, "Do you really want to delete ?", "Delete",
 						JOptionPane.YES_NO_OPTION);
+				
+				// can delete
 				if (p == 0) {
-					PreparedStatement pst = null;
-					ResultSet rsm = null;
-					String sql = "DELETE FROM `DRIVER` WHERE `PARK NO` = ?";
 					try {
-						pst = SqliteConnection.establishSqliteConnection().prepareStatement(sql);
-						pst.setString(1, StaticMembers.searchParkNoDelete);
-						System.out.println(StaticMembers.searchParkNoDelete);
-						if (pst.executeUpdate() > 0) {
+						// creating SearchJFrame object
+						SearchJFrame searchJFrame = new SearchJFrame();
+						
+						// set the row 
+						searchJFrame.setRow(table.getSelectedRow());
+						
+						// get clicked park number
+						searchJFrame.setTableClick(table.getModel().getValueAt(searchJFrame.getRow(), 5).toString());
+						
+						// establishing MySQL connection
+						setConnection(MySQLConnection.establishMySqlConnection());
+						
+						preparedStatement = getConnection().prepareStatement(MySQLQuery.getSqlQueryForDeleteDriverByNic());
+						preparedStatement.setString(1, searchJFrame.getTableClick());
+						
+						System.out.println(searchJFrame.getTableClick());
+						
+						boolean payment = MySQLQueryMethod.deletePaymentByNic(searchJFrame.getTableClick());
+						System.out.println(!payment);
+						int result = preparedStatement.executeUpdate();
+						System.out.println(result);
+
+						
+						if (!payment && (result > 0)) {
 							JOptionPane.showMessageDialog(null, "Successfully Deleted!");
 							driverImage.setIcon(iconDefault);
-							ResultSet rs1 = null;
-							PreparedStatement ps1 = null;
 
+							// refresh the table after deletion by re executing sqlQueryForSelectDriverDetailsBySearch
 							try {
+								// establishing MySQL connection
+								setConnection(MySQLConnection.establishMySqlConnection());
+								
+								// creating prepared statement to execute parameterized query
+								preparedStatement = getConnection().prepareStatement(MySQLQuery.getSqlQueryForSelectDriverDetailsBySearch());
+								
+								// setting vales using PreparedStatement's setter methods 
+								preparedStatement.setString(1, getSearchBy());
+								preparedStatement.setString(2, "%" + txtsearch.getText() + "%");
+								
+								// execute the selected query and return an instance of ResultSet
+								resultSet = preparedStatement.executeQuery();
 
-								String query = "SELECT `PARK`,`PARK NO`,`WHEEL NO`,`DRIVER NAME`,`ADDRESS`,`NIC NUMBER`,`PHONE NUMBER`,`GS` FROM `DRIVER` WHERE "
-										+ comboBoxSelection + " = ?";
-								ps1 = SqliteConnection.establishSqliteConnection().prepareStatement(query);
-								ps1.setString(1, text);
-								rs1 = ps1.executeQuery();
-
-								table.setModel(DbUtils.resultSetToTableModel(rs1));
+								// set that resultSet to the table 
+								table.setModel(DbUtils.resultSetToTableModel(resultSet));
 
 								SearchJFrame.setJTableColumnsWidth(table, 1024, 5, 5, 10, 20, 30, 15, 15, 5);
-
-							} catch (Exception e2) {
-								JOptionPane.showMessageDialog(null, e2);
+								
+								// load TIMS logo as image placeholder
+								driverImage.setIcon(iconDefault);
+								
+								txtCount.setText("0");
+								
+							} catch (SQLException e1) {
+								e1.printStackTrace();
 							} finally {
 								try {
-									ps1.close();
+									preparedStatement.close();
 								} catch (SQLException e1) {
-									// TODO Auto-generated catch block
 									e1.printStackTrace();
 								}
 								try {
-									rs1.close();
+									resultSet.close();
 								} catch (SQLException e1) {
-									// TODO Auto-generated catch block
 									e1.printStackTrace();
 								}
 								try {
-									SqliteConnection.establishSqliteConnection().close();
+									getConnection().close();
 								} catch (SQLException e1) {
-									// TODO Auto-generated catch block
 									e1.printStackTrace();
 								}
 							}
 
 						} else {
-							JOptionPane.showMessageDialog(null, "Deletion failed. Try again");
+							JOptionPane.showMessageDialog(null, "Deletion failed. Try again later");
 						}
 					} catch (Exception e1) {
 						JOptionPane.showMessageDialog(null, e1);
 					} finally {
 						try {
-							pst.close();
+							preparedStatement.close();
 						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						try {
+							getConnection().close();
+						} catch (SQLException e1) {
 							e1.printStackTrace();
 						}
 					}
@@ -341,20 +410,29 @@ public class SearchJFrame extends JFrame {
 		btnCount.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (text.equals("")) {
+				if (txtsearch.getText().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please fill Search information");
 				} else {
-					PreparedStatement pstt = null;
-					ResultSet rst = null;
 					try {
-						String sql = "SELECT COUNT(`ADDRESS`) FROM `DRIVER` WHERE `" + comboBoxSelection + "` = ?";
-						pstt = SqliteConnection.establishSqliteConnection().prepareStatement(sql);
-						pstt.setString(1, text);
-						System.out.println(sql);
-						rst = pstt.executeQuery();
-						if (rst.next()) {
-							String sum = rst.getString("COUNT(`ADDRESS`)");
-							txtCount.setText(sum);
+						// establishing MySQL connection
+						setConnection(MySQLConnection.establishMySqlConnection());
+						
+						String query = "SELECT COUNT(`park`) FROM `driver` WHERE `" + getSearchBy() + "` LIKE ?";
+						
+						// creating prepared statement to execute parameterized query
+						preparedStatement = getConnection().prepareStatement(query);
+						
+						// setting vales using PreparedStatement's setter methods 
+						// preparedStatement.setString(1, getSearchBy());
+						preparedStatement.setString(1, "%" + txtsearch.getText() + "%");
+						
+						// execute the selected query and return an instance of ResultSet
+						resultSet = preparedStatement.executeQuery();
+						
+						// resultSet.next() returns true if the new current row is valid otherwise false if there are no more rows
+						if (resultSet.next()) {
+							// return number of rows in table by counting address 
+							txtCount.setText(resultSet.getString("COUNT(`park`)"));
 						} else {
 							txtCount.setText("0");
 						}
@@ -362,22 +440,19 @@ public class SearchJFrame extends JFrame {
 						JOptionPane.showMessageDialog(null, e1);
 					} finally {
 						try {
-							pstt.close();
-						} catch (SQLException e9) {
-							// TODO Auto-generated catch block
-							e9.printStackTrace();
+							preparedStatement.close();
+						} catch (SQLException e1) {
+							e1.printStackTrace();
 						}
 						try {
-							rst.close();
-						} catch (SQLException e8) {
-							// TODO Auto-generated catch block
-							e8.printStackTrace();
+							resultSet.close();
+						} catch (SQLException e1) {
+							e1.printStackTrace();
 						}
 						try {
-							SqliteConnection.establishSqliteConnection().close();
-						} catch (SQLException e7) {
-							// TODO Auto-generated catch block
-							e7.printStackTrace();
+							getConnection().close();
+						} catch (SQLException e1) {
+							e1.printStackTrace();
 						}
 					}
 				}
@@ -391,9 +466,16 @@ public class SearchJFrame extends JFrame {
 		btnAdd.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// create instance of AutoDriverRegistrationJFrame
 				AutoDriverRegistrationJFrame autoDriverRegistrationJFrame = new AutoDriverRegistrationJFrame();
+				
+				// make it visible
 				autoDriverRegistrationJFrame.setVisible(true);
+				
+				// center this JFrame 
 				autoDriverRegistrationJFrame.setLocationRelativeTo(null);
+				
+				// dispose current JFrame
 				dispose();
 			}
 		});
@@ -438,5 +520,37 @@ public class SearchJFrame extends JFrame {
 
 	public void setTableClick(String tableClick) {
 		this.tableClick = tableClick;
+	}
+
+	public ResultSet getResultSet() {
+		return resultSet;
+	}
+
+	public void setResultSet(ResultSet resultSet) {
+		this.resultSet = resultSet;
+	}
+
+	public PreparedStatement getPreparedStatement() {
+		return preparedStatement;
+	}
+
+	public void setPreparedStatement(PreparedStatement preparedStatement) {
+		this.preparedStatement = preparedStatement;
+	}
+
+	public Connection getConnection() {
+		return connection;
+	}
+
+	public void setConnection(Connection connection) {
+		this.connection = connection;
+	}
+
+	public String getSearchBy() {
+		return searchBy;
+	}
+
+	public void setSearchBy(String searchBy) {
+		this.searchBy = searchBy;
 	}
 }

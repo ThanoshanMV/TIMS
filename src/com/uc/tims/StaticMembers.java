@@ -17,7 +17,6 @@ public class StaticMembers {
 	static String imageURL;
 	static String name = "Hey there!,";
 	static boolean adminLoggedin = false;
-	static String searchParkNoDelete;
 	static String paymentDriverName;
 	static String paymentNIC;
 	static String paymentDeleteName;

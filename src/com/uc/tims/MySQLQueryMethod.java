@@ -82,4 +82,31 @@ public class MySQLQueryMethod {
 		}
 		return -1;
 	}
+	
+	public static boolean deletePaymentByNic(String nic) {
+		PreparedStatement preparedStatement = null; 
+		boolean resultSet = true;
+		Connection connection = MySQLConnection.establishMySqlConnection();
+		try {
+			preparedStatement = connection.prepareStatement(MySQLQuery.getSqlQueryForDeletePaymentByNic());
+			preparedStatement.setString(1, nic);
+			// execute the selected query and return an instance of ResultSet
+			resultSet = preparedStatement.execute();
+			return resultSet;
+		} catch (SQLException e1) {
+			JOptionPane.showMessageDialog(null, e1);
+		} finally {
+			try {
+				preparedStatement.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			try {
+				connection.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}
+		return true;
+	}
 }

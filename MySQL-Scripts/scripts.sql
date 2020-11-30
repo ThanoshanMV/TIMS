@@ -94,6 +94,7 @@ SELECT * FROM role;
 INSERT INTO employee(roleid, name, username, nic, email, job, password) VALUES
 (1,"Urban Council","Hatton-UC","971245637V","mvthanoshan@gmail.com","Assistant","2019");
 
+# select all rows
 SELECT * FROM employee;
 
 SELECT * FROM driver;
@@ -102,7 +103,13 @@ SELECT * FROM payment;
 
 SELECT * FROM role;
 
+# delete all rows
+DELETE FROM payment;
+
+DELETE FROM driver;
+
 # we can set auto increment from any number
-# DELETE FROM driver;
 # ALTER TABLE driver AUTO_INCREMENT = 1;
+
+
 
