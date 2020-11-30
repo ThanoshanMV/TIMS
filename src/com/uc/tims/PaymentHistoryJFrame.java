@@ -194,83 +194,8 @@ public class PaymentHistoryJFrame extends JFrame {
 			}
 		});
 		btnPrint.setFont(new Font("Dialog", Font.BOLD, 15));
-		btnPrint.setBounds(358, 507, 114, 35);
+		btnPrint.setBounds(318, 507, 114, 35);
 		contentPane.add(btnPrint);
-		
-		JButton btnDelete = new JButton("Delete");
-		btnDelete.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int p = JOptionPane.showConfirmDialog(null, "Do you really want to delete ?", "Delete",
-						JOptionPane.YES_NO_OPTION);
-				if (p == 0) {
-					String sql = "DELETE FROM `payment` WHERE `name` = ?";
-					try {
-						
-						connection = MySQLConnection.establishMySqlConnection();
-						
-						preparedStatement = connection.prepareStatement(sql);
-						preparedStatement.setString(1, StaticMembers.paymentDeleteName);
-						System.out.println(StaticMembers.paymentDeleteName);
-						if (preparedStatement.executeUpdate() > 0) {
-							JOptionPane.showMessageDialog(null, "Successfully Deleted!");
-							try {
-								String selection = (String) comboBox.getSelectedItem();
-								String query = "SELECT `park`,`name`,`nic`,`year2013`,`year2014`,`year2015`,`year2016`,`year2017`,`year2018`,`year2019`,`year2020`,`year2021`,`year2022`,`totalpayment` FROM `payment` WHERE `"
-										+ selection + "` = ?";
-								System.out.println(query);
-								preparedStatement = connection.prepareStatement(query);
-								preparedStatement.setString(1, txtsearch.getText());
-								resultSet = preparedStatement.executeQuery();
-
-								table.setModel(DbUtils.resultSetToTableModel(resultSet));
-
-								setJTableColumnsWidth(table, 1024, 5, 20, 10, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 10);
-
-							} catch (SQLException e1) {
-								e1.printStackTrace();
-							} finally {
-								try {
-									preparedStatement.close();
-								} catch (SQLException e1) {
-									e1.printStackTrace();
-								}
-								try {
-									resultSet.close();
-								} catch (SQLException e1) {
-									e1.printStackTrace();
-								}
-								try {
-									connection.close();
-								} catch (SQLException e1) {
-									e1.printStackTrace();
-								}
-							}
-
-						} else {
-							JOptionPane.showMessageDialog(null, "Deletion failed. Try again");
-						}
-					} catch (Exception e1) {
-						JOptionPane.showMessageDialog(null, e1);
-					} finally {
-						try {
-							preparedStatement.close();
-						} catch (SQLException e1) {
-							e1.printStackTrace();
-						}
-						try {
-							connection.close();
-						} catch (SQLException e1) {
-							e1.printStackTrace();
-						}
-					}
-				} else {
-					// Do nothing
-				}
-			}
-		});
-		btnDelete.setFont(new Font("Dialog", Font.BOLD, 15));
-		btnDelete.setBounds(194, 507, 114, 35);
-		contentPane.add(btnDelete);
 	}
 
 	static void setJTableColumnsWidth(JTable table, int tablePreferredWidth, double... percentages) {
