@@ -21,6 +21,7 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.awt.print.PrinterException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,6 +33,10 @@ public class SummaryJFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JTable table;
+	
+	PreparedStatement preparedStatement = null;
+	ResultSet resultSet = null;
+	Connection connection = null;
 
 	/**
 	 * Launch the application.
@@ -75,38 +80,35 @@ public class SummaryJFrame extends JFrame {
 		DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) table.getDefaultRenderer(Object.class);
 		renderer.setHorizontalAlignment(SwingConstants.CENTER);
 
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 		try {
-			String query = "Select PARK as Park, count(*) as Total from DRIVER Group by PARK";
-			System.out.println(query);
-			ps = SqliteConnection.establishSqliteConnection().prepareStatement(query);
-			rs = ps.executeQuery();
+			String query = "Select park as Park, count(*) as Total from driver Group by park";
+			
+			connection = MySQLConnection.establishMySqlConnection();
+			
+			preparedStatement = connection.prepareStatement(query);
+			
+			resultSet = preparedStatement.executeQuery();
 
-			table.setModel(DbUtils.resultSetToTableModel(rs));
+			table.setModel(DbUtils.resultSetToTableModel(resultSet));
 
 			SearchJFrame.setJTableColumnsWidth(table, 1024, 5, 5, 10, 20, 30, 10, 15, 5);
 
 		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} finally {
 			try {
-				ps.close();
+				preparedStatement.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			try {
-				rs.close();
+				resultSet.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			try {
 				SqliteConnection.establishSqliteConnection().close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}

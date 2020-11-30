@@ -90,7 +90,7 @@ public class MySQLQueryMethod {
 		try {
 			preparedStatement = connection.prepareStatement(MySQLQuery.getSqlQueryForDeletePaymentByNic());
 			preparedStatement.setString(1, nic);
-			// execute the selected query and return an instance of ResultSet
+			// true if the first result is a ResultSet object; false if the first result is an update count or there is no result
 			resultSet = preparedStatement.execute();
 			return resultSet;
 		} catch (SQLException e1) {
