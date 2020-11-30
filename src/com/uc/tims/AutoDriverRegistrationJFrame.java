@@ -249,9 +249,17 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 							// center this JFrame
 							autoDriverRegistrationJFrame.setLocationRelativeTo(null);
 							
-							// insert a new row for newly registered driver 
-							MySQLConnection.insertPaymentRow(driver.getName(),driver.getNic(), driver.getPark());
+							// get now registered driver id from driver table 
+							int driverId = MySQLConnection.getDriverIdByNic(driver.getNic());
 							
+							// check if we have successfully get the driver id from driver table
+							if(driverId != -1) {
+							// insert a new row for newly registered driver 
+							MySQLConnection.insertPaymentRow(driverId, driver.getName(),driver.getNic(), driver.getPark());
+							}
+							else {
+								System.out.println("Can not able to retrieve driver id");
+							}
 							// dispose the current JFrame
 							dispose();
 						}

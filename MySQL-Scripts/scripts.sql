@@ -1,6 +1,8 @@
 # Creating database tims
 CREATE DATABASE tims;
 
+# DROP DATABASE tims;
+
 # use the tims database
 USE tims;
 
@@ -48,7 +50,7 @@ CREATE TABLE driver (
 
 # create table payment
 CREATE TABLE payment (
-	id INT NOT NULL AUTO_INCREMENT,
+	id INT NOT NULL,
 	name VARCHAR(255),
 	nic VARCHAR(255) NOT NULL,
     park VARCHAR(255),
@@ -70,6 +72,7 @@ CREATE TABLE payment (
 	FOREIGN KEY (id) REFERENCES driver(id)
 );
 
+
 # create table employee_driver
 CREATE TABLE employee_driver (
 	employeeid INT NOT NULL,
@@ -79,8 +82,6 @@ CREATE TABLE employee_driver (
     FOREIGN KEY (employeeid) REFERENCES employee(id),
     FOREIGN KEY (driverid) REFERENCES driver(id)
 );
-
-# DROP DATABASE tims;
 
 # insert details into role table TO BE EXECUTED!!
 INSERT INTO role VALUES
@@ -100,3 +101,8 @@ SELECT * FROM driver;
 SELECT * FROM payment;
 
 SELECT * FROM role;
+
+# we can set auto increment from any number
+# DELETE FROM driver;
+# ALTER TABLE driver AUTO_INCREMENT = 1;
+
