@@ -5,6 +5,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import com.uc.tims.entity.Driver;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -15,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
@@ -40,18 +44,12 @@ public class EditAutoDriverFormJFrame extends JFrame {
 	private JTextField txtaddress;
 	private JTextField txtnic;
 	private JTextField txtphonenumber;
-
-	private String no;
-	private String park;
-	private String parkno;
-	private String wheelno;
-	private String drivername;
-	private String address;
-	private String nic;
-	private String phonenumber;
-	private String gs;
-	private String imageURL;
 	private JTextField txtImageUrl;
+
+	
+	private Driver driver;
+	private Connection connection; 
+	private PreparedStatement preparedStatement;
 
 	/**
 	 * Launch the application.
@@ -77,6 +75,9 @@ public class EditAutoDriverFormJFrame extends JFrame {
 
 		setTitle("Edit details");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
+		
+		// creating driver object
+		driver = new Driver();
 
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -95,7 +96,7 @@ public class EditAutoDriverFormJFrame extends JFrame {
 		txtImageUrl.setText(StaticMembers.imageURL);
 
 		JComboBox comboBox1 = new JComboBox();
-		comboBox1.setModel(new DefaultComboBoxModel(new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "DA", "DB", "DC", "DD", "DE", "DF", "DG", "DH"}));
+		comboBox1.setModel(new DefaultComboBoxModel(driver.getAvailableparks()));
 		comboBox1.setFont(new Font("Dialog", Font.BOLD, 15));
 		comboBox1.setBounds(298, 91, 157, 33);
 		contentPane.add(comboBox1);
@@ -228,7 +229,7 @@ public class EditAutoDriverFormJFrame extends JFrame {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				char c = e.getKeyChar();
-
+				// avoid non-digits 
 				if (!((Character.isDigit(c)) || (c == KeyEvent.VK_BACK_SPACE) || (c == KeyEvent.VK_DELETE))) {
 					e.consume();
 
@@ -247,64 +248,59 @@ public class EditAutoDriverFormJFrame extends JFrame {
 		btnSave.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				EditAutoDriverFormJFrame object = new EditAutoDriverFormJFrame();
-				object.setPark(comboBox1.getSelectedItem().toString());
-				object.setParkno(txtparkno.getText());
-				object.setWheelno(txtwheelno.getText());
-				object.setDrivername(txtdrivername.getText());
-				object.setAddress(txtaddress.getText());
-				object.setNic(txtnic.getText());
-				object.setPhonenumber(txtphonenumber.getText());
-				object.setGs(comboBox.getSelectedItem().toString());
-				object.setImageURL(txtImageUrl.getText());
-
-				System.out.println(object.getPark());
-
-				PreparedStatement ps = null;
-				if (object.getParkno().equals("")) {
+				driver.setPark(comboBox1.getSelectedItem().toString());
+				driver.setParkNumber(txtparkno.getText());
+				driver.setWheelNumber(txtwheelno.getText());
+				driver.setName(txtdrivername.getText());
+				driver.setAddress(txtaddress.getText());
+				driver.setNic(txtnic.getText());
+				driver.setPhoneNumber(txtphonenumber.getText());
+				driver.setGsDecision(comboBox.getSelectedItem().toString());
+				driver.setImageUrl(txtImageUrl.getText());
+				
+				if (driver.getParkNumber().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid park no!");
-				} else if (object.getWheelno().equals("")) {
+				} else if (driver.getWheelNumber().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid wheel no!");
-				} else if (object.getDrivername().equals("")) {
+				} else if (driver.getName().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid driver name!");
-				} else if (object.getAddress().equals("")) {
+				} else if (driver.getAddress().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid address!");
-				} else if (object.getNic().equals("")) {
+				} else if (driver.getNic().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid nic number!");
-				} else if (!((object.getNic().length() == 10) || (object.getNic().length() == 12))) {
+				} else if (!((driver.getNic().length() == 10) || (driver.getNic().length() == 12))) {
 					JOptionPane.showMessageDialog(null, "Sorry, Check NIC length!");
-				} else if (object.getPhonenumber().equals("")) {
+				} else if (driver.getPhoneNumber().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid phone number!");
-				} else if (!(object.getPhonenumber().length() == 10)) {
+				} else if (!(driver.getPhoneNumber().length() == 10)) {
 					JOptionPane.showMessageDialog(null, "Phone number should be in 10 characters!");
-				} else if (object.getImageURL().equals("")) {
+				} else if (driver.getImageUrl().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid driver image");
 				} else {
 
 					try {
-						System.out.println(object.getParkno());
-						System.out.println(object.getWheelno());
-						System.out.println(object.getImageURL());
-						System.out.println();
-						String sqlQueryForUpdateDriverDetails = "UPDATE `DRIVER` SET `PARK`= ?,`PARK NO`= ? ,`WHEEL NO`= ? ,`DRIVER NAME`= ? ,`ADDRESS`=  ? ,`NIC NUMBER`= ? ,`PHONE NUMBER`= ? ,`GS`= ? ,`IMAGES`= ? ,`IMAGEURL` = ? WHERE `PARK NO`= ?";
-						ps = SqliteConnection.establishSqliteConnection()
-								.prepareStatement(sqlQueryForUpdateDriverDetails);
+						System.out.println(driver.getPark());
+						System.out.println(driver.getWheelNumber());
+						System.out.println(driver.getImageUrl());
+						connection = MySQLConnection.establishMySqlConnection();
+						String sqlQueryForUpdateDriverDetails = "UPDATE `driver` SET `park`= ?,`parkno`= ? ,`wheelno`= ? ,`name`= ? ,`address`=  ? ,`nic`= ? ,`phoneno`= ? ,`gs`= ? ,`images`= ? ,`imageurl` = ? WHERE `parkno`= ?";
+						preparedStatement = connection.prepareStatement(sqlQueryForUpdateDriverDetails);
 
-						ps.setString(1, object.getPark());
-						ps.setString(2, object.getParkno());
-						ps.setString(3, object.getWheelno());
-						ps.setString(4, object.getDrivername());
-						ps.setString(5, object.getAddress());
-						ps.setString(6, object.getNic());
-						ps.setString(7, object.getPhonenumber());
-						ps.setString(8, object.getGs());
-						ps.setBytes(9, readFile(object.getImageURL()));
-						ps.setString(10, object.getImageURL());
-						ps.setString(11, StaticMembers.parkNo);
+						preparedStatement.setString(1, driver.getPark());
+						preparedStatement.setString(2, driver.getParkNumber());
+						preparedStatement.setString(3, driver.getWheelNumber());
+						preparedStatement.setString(4, driver.getName());
+						preparedStatement.setString(5, driver.getAddress());
+						preparedStatement.setString(6, driver.getNic());
+						preparedStatement.setString(7, driver.getPhoneNumber());
+						preparedStatement.setString(8, driver.getGsDecision());
+						preparedStatement.setBytes(9, driver.readImageFile(driver.getImageUrl()));
+						preparedStatement.setString(10, driver.getImageUrl());
+						preparedStatement.setString(11, StaticMembers.parkNo);
 
 						System.out.println(sqlQueryForUpdateDriverDetails);
 
-						if (ps.executeUpdate() > 0) {
+						if (preparedStatement.executeUpdate() > 0) {
 							JOptionPane.showMessageDialog(null, "Successfully Saved!");
 							DashboardJFrame dashboardJFrame = new DashboardJFrame();
 							dashboardJFrame.setVisible(true);
@@ -314,19 +310,16 @@ public class EditAutoDriverFormJFrame extends JFrame {
 							JOptionPane.showMessageDialog(null, "Updation failed. Check entered details or Try again.");
 						}
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						JOptionPane.showMessageDialog(null, "Error while establishing connection.");
 					} finally {
 						try {
-							ps.close();
+							preparedStatement.close();
 						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 						try {
-							SqliteConnection.establishSqliteConnection().close();
+							connection.close();
 						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 					}
@@ -375,104 +368,28 @@ public class EditAutoDriverFormJFrame extends JFrame {
 
 	}
 
-	public String getNo() {
-		return no;
+	public Driver getDriver() {
+		return driver;
 	}
 
-	public void setNo(String no) {
-		this.no = no;
+	public void setDriver(Driver driver) {
+		this.driver = driver;
 	}
 
-	public String getPark() {
-		return park;
+	public Connection getConnection() {
+		return connection;
 	}
 
-	public void setPark(String park) {
-		this.park = park;
+	public void setConnection(Connection connection) {
+		this.connection = connection;
 	}
 
-	public String getParkno() {
-		return parkno;
+	public PreparedStatement getPreparedStatement() {
+		return preparedStatement;
 	}
 
-	public void setParkno(String parkno) {
-		this.parkno = parkno;
+	public void setPreparedStatement(PreparedStatement preparedStatement) {
+		this.preparedStatement = preparedStatement;
 	}
-
-	public String getWheelno() {
-		return wheelno;
-	}
-
-	public void setWheelno(String wheelno) {
-		this.wheelno = wheelno;
-	}
-
-	public String getDrivername() {
-		return drivername;
-	}
-
-	public void setDrivername(String drivername) {
-		this.drivername = drivername;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public String getNic() {
-		return nic;
-	}
-
-	public void setNic(String nic) {
-		this.nic = nic;
-	}
-
-	public String getPhonenumber() {
-		return phonenumber;
-	}
-
-	public void setPhonenumber(String phonenumber) {
-		this.phonenumber = phonenumber;
-	}
-
-	public String getGs() {
-		return gs;
-	}
-
-	public void setGs(String gs) {
-		this.gs = gs;
-	}
-
-	public String getImageURL() {
-		return imageURL;
-	}
-
-	public void setImageURL(String imageURL) {
-		this.imageURL = imageURL;
-	}
-
-	static private byte[] readFile(String file) {
-		ByteArrayOutputStream bos = null;
-		try {
-			File f = new File(file);
-			FileInputStream fis = new FileInputStream(f);
-			byte[] buffer = new byte[1024];
-			bos = new ByteArrayOutputStream();
-			for (int len; (len = fis.read(buffer)) != -1;) {
-				bos.write(buffer, 0, len);
-			}
-		} catch (FileNotFoundException e) {
-			System.err.println(e.getMessage());
-		} catch (IOException e2) {
-			System.err.println(e2.getMessage());
-		} finally {
-
-		}
-		return bos != null ? bos.toByteArray() : null;
-
-	}
+	
 }
