@@ -42,6 +42,10 @@ public class PrintJFrame extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtprint;
 	private JTable table;
+	
+
+	private PreparedStatement preparedStatement = null;
+	private ResultSet resultSet = null;
 
 	/**
 	 * Launch the application.
@@ -80,7 +84,7 @@ public class PrintJFrame extends JFrame {
 
 		JComboBox comboBoxPrint = new JComboBox();
 		comboBoxPrint.setFont(new Font("Dialog", Font.BOLD, 15));
-		comboBoxPrint.setModel(new DefaultComboBoxModel(new String[] { "PARK", "PARK NO" }));
+		comboBoxPrint.setModel(new DefaultComboBoxModel(new String[] { "park", "parkno" }));
 		comboBoxPrint.setBounds(29, 68, 212, 35);
 		contentPane.add(comboBoxPrint);
 
@@ -112,44 +116,36 @@ public class PrintJFrame extends JFrame {
 		txtprint.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-
 				txtprint.setText(txtprint.getText().toUpperCase());
-
-				PreparedStatement ps = null;
-				ResultSet rs = null;
 				try {
 					String selection = (String) comboBoxPrint.getSelectedItem();
-					String query = "SELECT `PARK`,`PARK NO`,`WHEEL NO`,`DRIVER NAME`,`ADDRESS`,`NIC NUMBER`,`PHONE NUMBER`,`GS` FROM `DRIVER` WHERE `"
+					String query = "SELECT `park`,`parkno`,`wheelno`,`name`,`address`,`nic`,`phoneno`,`gs` FROM `driver` WHERE `"
 							+ selection + "` = ?";
 					System.out.println(query);
-					ps = SqliteConnection.establishSqliteConnection().prepareStatement(query);
-					ps.setString(1, txtprint.getText());
-					rs = ps.executeQuery();
+					preparedStatement = MySQLConnection.establishMySqlConnection().prepareStatement(query);
+					preparedStatement.setString(1, txtprint.getText());
+					resultSet = preparedStatement.executeQuery();
 
-					table.setModel(DbUtils.resultSetToTableModel(rs));
+					table.setModel(DbUtils.resultSetToTableModel(resultSet));
 
 					SearchJFrame.setJTableColumnsWidth(table, 1024, 5, 5, 10, 20, 30, 10, 15, 5);
 
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} finally {
 					try {
-						ps.close();
+						preparedStatement.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					try {
-						rs.close();
+						resultSet.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					try {
 						SqliteConnection.establishSqliteConnection().close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				}
