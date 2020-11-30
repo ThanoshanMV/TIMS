@@ -125,7 +125,7 @@ public class UserLoginJFrame extends JFrame {
 				try {
 
 					ps = SqliteConnection.establishSqliteConnection()
-							.prepareStatement(StaticMembers.sqlQueryForUserLogIn);
+							.prepareStatement(MySQLQuery.getSqlQueryForUserLogIn());
 					ps.setString(1, userLoginJFrameObject.getUsername());
 					ps.setString(2, userLoginJFrameObject.getPassword());
 					System.out.println("User name " + userLoginJFrameObject.getUsername());

@@ -221,7 +221,7 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 						connection = MySQLConnection.establishMySqlConnection();
 						
 						// creating prepared statement to execute parameterized query
-						preparedStatement = connection.prepareStatement(StaticMembers.sqlQueryForDriverRegistration);
+						preparedStatement = connection.prepareStatement(MySQLQuery.getSqlQueryForDriverRegistration());
 						
 						// setting vales using PreparedStatement's setter methods 
 						// preparedStatement.setString(1, driver.getPaymentId());
@@ -250,12 +250,12 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 							autoDriverRegistrationJFrame.setLocationRelativeTo(null);
 							
 							// get now registered driver id from driver table 
-							int driverId = MySQLConnection.getDriverIdByNic(driver.getNic());
+							int driverId = MySQLQueryMethod.getDriverIdByNic(driver.getNic());
 							
 							// check if we have successfully get the driver id from driver table
 							if(driverId != -1) {
 							// insert a new row for newly registered driver 
-							MySQLConnection.insertPaymentRow(driverId, driver.getName(),driver.getNic(), driver.getPark());
+							MySQLQueryMethod.insertPaymentRow(driverId, driver.getName(),driver.getNic(), driver.getPark());
 							}
 							else {
 								System.out.println("Can not able to retrieve driver id");

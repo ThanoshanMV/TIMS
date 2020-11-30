@@ -117,7 +117,7 @@ public class ChooseEditDriverJFrame extends JFrame {
 				try {
 
 					ps = SqliteConnection.establishSqliteConnection()
-							.prepareStatement(StaticMembers.sqlQueryForChooseDriverToEdit);
+							.prepareStatement(MySQLQuery.getSqlQueryForChooseDriverToEdit());
 					ps.setString(1, obj.getPark());
 					ps.setString(2, obj.getNicnumber());
 
