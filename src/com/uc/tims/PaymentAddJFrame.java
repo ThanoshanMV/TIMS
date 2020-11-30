@@ -5,6 +5,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import com.uc.tims.entity.Payment;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -16,6 +19,7 @@ import javax.swing.WindowConstants;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
@@ -38,6 +42,11 @@ public class PaymentAddJFrame extends JFrame {
 	private JTextField txt18;
 	private JTextField txt20;
 	private JTextField txt22;
+	
+	private Payment payment;
+	private PreparedStatement preparedStatement = null;
+	private Connection connection = null;
+	
 
 	/**
 	 * Launch the application.
@@ -61,6 +70,8 @@ public class PaymentAddJFrame extends JFrame {
 	 */
 	public PaymentAddJFrame() {
 
+		payment = new Payment();
+		
 		setTitle("Payment history");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
 
@@ -165,7 +176,7 @@ public class PaymentAddJFrame extends JFrame {
 		txt13.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				txttotal.setText(findTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
+				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
 						txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(), txt21.getText(),
 						txt22.getText()));
 			}
@@ -190,7 +201,7 @@ public class PaymentAddJFrame extends JFrame {
 		txt15.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				txttotal.setText(findTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
+				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
 						txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(), txt21.getText(),
 						txt22.getText()));
 			}
@@ -215,7 +226,7 @@ public class PaymentAddJFrame extends JFrame {
 		txt17.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				txttotal.setText(findTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
+				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
 						txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(), txt21.getText(),
 						txt22.getText()));
 			}
@@ -240,7 +251,7 @@ public class PaymentAddJFrame extends JFrame {
 		txt19.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				txttotal.setText(findTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
+				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
 						txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(), txt21.getText(),
 						txt22.getText()));
 			}
@@ -265,7 +276,7 @@ public class PaymentAddJFrame extends JFrame {
 		txt21.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				txttotal.setText(findTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
+				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
 						txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(), txt21.getText(),
 						txt22.getText()));
 			}
@@ -300,7 +311,7 @@ public class PaymentAddJFrame extends JFrame {
 		txt14.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				txttotal.setText(findTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
+				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
 						txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(), txt21.getText(),
 						txt22.getText()));
 			}
@@ -325,7 +336,7 @@ public class PaymentAddJFrame extends JFrame {
 		txt16.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				txttotal.setText(findTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
+				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
 						txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(), txt21.getText(),
 						txt22.getText()));
 			}
@@ -350,7 +361,7 @@ public class PaymentAddJFrame extends JFrame {
 		txt18.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				txttotal.setText(findTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
+				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
 						txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(), txt21.getText(),
 						txt22.getText()));
 			}
@@ -375,7 +386,7 @@ public class PaymentAddJFrame extends JFrame {
 		txt20.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				txttotal.setText(findTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
+				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
 						txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(), txt21.getText(),
 						txt22.getText()));
 			}
@@ -400,7 +411,7 @@ public class PaymentAddJFrame extends JFrame {
 		txt22.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				txttotal.setText(findTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
+				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
 						txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(), txt21.getText(),
 						txt22.getText()));
 			}
@@ -439,28 +450,30 @@ public class PaymentAddJFrame extends JFrame {
 		btnSave.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				PreparedStatement ps = null;
-				try {
-					System.out.println();
-					String sqlQueryForUpdatePaymentDetails = "UPDATE `PAYMENT` SET `2013`= ?,`2014`= ? ,`2015`= ? ,`2016`= ? ,`2017`=  ? ,`2018`= ? ,`2019`= ? ,`2020`= ? ,`2021`= ? ,`2022` = ?, `TOTAL` = ? WHERE `NAME`= ?";
-					ps = SqliteConnection.establishSqliteConnection().prepareStatement(sqlQueryForUpdatePaymentDetails);
 
-					ps.setDouble(1, convertToDouble(txt13.getText()));
-					ps.setDouble(2, convertToDouble(txt14.getText()));
-					ps.setDouble(3, convertToDouble(txt15.getText()));
-					ps.setDouble(4, convertToDouble(txt16.getText()));
-					ps.setDouble(5, convertToDouble(txt17.getText()));
-					ps.setDouble(6, convertToDouble(txt18.getText()));
-					ps.setDouble(7, convertToDouble(txt19.getText()));
-					ps.setDouble(8, convertToDouble(txt20.getText()));
-					ps.setDouble(9, convertToDouble(txt21.getText()));
-					ps.setDouble(10, convertToDouble(txt22.getText()));
-					ps.setDouble(11, convertToDouble(txttotal.getText()));
-					ps.setString(12, txtname.getText());
+				try {
+					
+					connection = MySQLConnection.establishMySqlConnection();
+					
+					String sqlQueryForUpdatePaymentDetails = "UPDATE `payment` SET `year2013`= ?,`year2014`= ? ,`year2015`= ? ,`year2016`= ? ,`year2017`=  ? ,`year2018`= ? ,`year2019`= ? ,`year2020`= ? ,`year2021`= ? ,`year2022` = ?, `totalpayment` = ? WHERE `name`= ?";
+					preparedStatement = connection.prepareStatement(sqlQueryForUpdatePaymentDetails);
+
+					preparedStatement.setDouble(1, payment.convertToDouble(txt13.getText()));
+					preparedStatement.setDouble(2, payment.convertToDouble(txt14.getText()));
+					preparedStatement.setDouble(3, payment.convertToDouble(txt15.getText()));
+					preparedStatement.setDouble(4, payment.convertToDouble(txt16.getText()));
+					preparedStatement.setDouble(5, payment.convertToDouble(txt17.getText()));
+					preparedStatement.setDouble(6, payment.convertToDouble(txt18.getText()));
+					preparedStatement.setDouble(7, payment.convertToDouble(txt19.getText()));
+					preparedStatement.setDouble(8, payment.convertToDouble(txt20.getText()));
+					preparedStatement.setDouble(9, payment.convertToDouble(txt21.getText()));
+					preparedStatement.setDouble(10, payment.convertToDouble(txt22.getText()));
+					preparedStatement.setDouble(11, payment.convertToDouble(txttotal.getText()));
+					preparedStatement.setString(12, txtname.getText());
 
 					System.out.println(sqlQueryForUpdatePaymentDetails);
 
-					if (ps.executeUpdate() > 0) {
+					if (preparedStatement.executeUpdate() > 0) {
 						JOptionPane.showMessageDialog(null, "Successfully Saved!");
 						DashboardJFrame dashboardJFrame = new DashboardJFrame();
 						dashboardJFrame.setVisible(true);
@@ -470,19 +483,16 @@ public class PaymentAddJFrame extends JFrame {
 						JOptionPane.showMessageDialog(null, "Updation failed. Check entered details or Try again.");
 					}
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(null, "Error while establishing connection.");
 				} finally {
 					try {
-						ps.close();
+						preparedStatement.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					try {
-						SqliteConnection.establishSqliteConnection().close();
+						connection.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				}
@@ -491,36 +501,6 @@ public class PaymentAddJFrame extends JFrame {
 		btnSave.setFont(new Font("Dialog", Font.BOLD, 15));
 		btnSave.setBounds(422, 536, 114, 37);
 		contentPane.add(btnSave);
-	}
-
-	static String findTotalPayment(String s1, String s2, String s3, String s4, String s5, String s6, String s7,
-			String s8, String s9, String s10) {
-		try {
-			double d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, total;
-			d1 = convertToDouble(s1);
-			d2 = convertToDouble(s2);
-			d3 = convertToDouble(s3);
-			d4 = convertToDouble(s4);
-			d5 = convertToDouble(s5);
-			d6 = convertToDouble(s6);
-			d7 = convertToDouble(s7);
-			d8 = convertToDouble(s8);
-			d9 = convertToDouble(s9);
-			d10 = convertToDouble(s10);
-			total = d1 + d2 + d3 + d4 + d5 + d6 + d7 + d8 + d9 + d10;
-			return Double.toString(total);
-		} catch (NumberFormatException e1) {
-			return Double.toString(0.0);
-		}
-
-	}
-
-	static Double convertToDouble(String value) {
-		try {
-			return Double.valueOf(value);
-		} catch (NumberFormatException e1) {
-			return 0.0;
-		}
 	}
 
 }

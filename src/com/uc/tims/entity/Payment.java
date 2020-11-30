@@ -34,7 +34,7 @@ public class Payment extends Person {
 		}
 	}
 	
-	private Double convertToDouble(String value) {
+	public Double convertToDouble(String value) {
 		try {
 			return Double.valueOf(value);
 		} catch (NumberFormatException e1) {

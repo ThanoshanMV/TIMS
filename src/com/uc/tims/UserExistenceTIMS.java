@@ -1,5 +1,6 @@
 package com.uc.tims;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,17 +10,21 @@ import javax.swing.JOptionPane;
 public class UserExistenceTIMS {
 
 	public static boolean isUserNameExist(String username) {
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		Connection connection = null;
 		boolean checkUserName = false;
-		String query = "SELECT * FROM `USER` WHERE `USERNAME`= ?";
+		String query = "SELECT * FROM `employee` WHERE `username`= ?";
 		try {
-			ps = SqliteConnection.establishSqliteConnection().prepareStatement(query);
-			ps.setString(1, username);
+			
+			connection = MySQLConnection.establishMySqlConnection();
+			
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, username);
 
-			rs = ps.executeQuery();
+			resultSet = preparedStatement.executeQuery();
 
-			if (rs.next()) {
+			if (resultSet.next()) {
 				checkUserName = true;
 			} else {
 				checkUserName = false;
@@ -29,21 +34,18 @@ public class UserExistenceTIMS {
 			JOptionPane.showMessageDialog(null, "Error while establishing connection.");
 		} finally {
 			try {
-				ps.close();
+				preparedStatement.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			try {
-				rs.close();
+				resultSet.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			try {
-				SqliteConnection.establishSqliteConnection().close();
+				connection.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
@@ -51,17 +53,21 @@ public class UserExistenceTIMS {
 	}
 
 	public static boolean isNameExist(String name) {
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		Connection connection = null;
 		boolean checkName = false;
-		String query = "SELECT * FROM `USER` WHERE `NAME`= ?";
+		String query = "SELECT * FROM `employee` WHERE `name`= ?";
 		try {
-			ps = SqliteConnection.establishSqliteConnection().prepareStatement(query);
-			ps.setString(1, name);
+			
+			connection = MySQLConnection.establishMySqlConnection();
+			
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, name);
 
-			rs = ps.executeQuery();
+			resultSet = preparedStatement.executeQuery();
 
-			if (rs.next()) {
+			if (resultSet.next()) {
 				checkName = true;
 			} else {
 				checkName = false;
@@ -71,21 +77,18 @@ public class UserExistenceTIMS {
 			JOptionPane.showMessageDialog(null, "Error while establishing connection.");
 		} finally {
 			try {
-				ps.close();
+				preparedStatement.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			try {
-				rs.close();
+				resultSet.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			try {
-				SqliteConnection.establishSqliteConnection().close();
+				connection.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}

@@ -1,5 +1,6 @@
 package com.uc.tims;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,17 +9,19 @@ import javax.swing.JOptionPane;
 
 public class DriverExistenceTIMS {
 	public static boolean isParkNoExist(String parkno) {
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		Connection connection = null;
 		boolean checkParkNo = false;
-		String query = "SELECT * FROM `DRIVER` WHERE `PARK NO`= ?";
+		String query = "SELECT * FROM `driver` WHERE `parkno`= ?";
 		try {
-			ps = SqliteConnection.establishSqliteConnection().prepareStatement(query);
-			ps.setString(1, parkno);
+			connection = MySQLConnection.establishMySqlConnection();
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, parkno);
 
-			rs = ps.executeQuery();
+			resultSet = preparedStatement.executeQuery();
 
-			if (rs.next()) {
+			if (resultSet.next()) {
 				checkParkNo = true;
 			} else {
 				checkParkNo = false;
@@ -28,21 +31,18 @@ public class DriverExistenceTIMS {
 			JOptionPane.showMessageDialog(null, "Error while establishing connection.");
 		} finally {
 			try {
-				ps.close();
+				preparedStatement.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			try {
-				rs.close();
+				resultSet.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			try {
-				SqliteConnection.establishSqliteConnection().close();
+				connection.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
@@ -50,17 +50,19 @@ public class DriverExistenceTIMS {
 	}
 
 	public static boolean isWheelNO(String wheelNO) {
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		Connection connection = null;
 		boolean checkWheelNo = false;
-		String query = "SELECT * FROM `DRIVER` WHERE `WHEEL NO`= ?";
+		String query = "SELECT * FROM `driver` WHERE `wheelno`= ?";
 		try {
-			ps = SqliteConnection.establishSqliteConnection().prepareStatement(query);
-			ps.setString(1, wheelNO);
+			connection = MySQLConnection.establishMySqlConnection();
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, wheelNO);
 
-			rs = ps.executeQuery();
+			resultSet = preparedStatement.executeQuery();
 
-			if (rs.next()) {
+			if (resultSet.next()) {
 				checkWheelNo = true;
 			} else {
 				checkWheelNo = false;
@@ -70,21 +72,18 @@ public class DriverExistenceTIMS {
 			JOptionPane.showMessageDialog(null, "Error while establishing connection.");
 		} finally {
 			try {
-				ps.close();
+				preparedStatement.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			try {
-				rs.close();
+				resultSet.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			try {
-				SqliteConnection.establishSqliteConnection().close();
+				connection.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
@@ -92,17 +91,19 @@ public class DriverExistenceTIMS {
 	}
 
 	public static boolean isName(String name) {
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		Connection connection = null;
 		boolean checkName = false;
-		String query = "SELECT * FROM `DRIVER` WHERE `DRIVER NAME`= ?";
+		String query = "SELECT * FROM `driver` WHERE `name`= ?";
 		try {
-			ps = SqliteConnection.establishSqliteConnection().prepareStatement(query);
-			ps.setString(1, name);
+			connection = MySQLConnection.establishMySqlConnection();
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, name);
 
-			rs = ps.executeQuery();
+			resultSet = preparedStatement.executeQuery();
 
-			if (rs.next()) {
+			if (resultSet.next()) {
 				checkName = true;
 			} else {
 				checkName = false;
@@ -112,21 +113,18 @@ public class DriverExistenceTIMS {
 			JOptionPane.showMessageDialog(null, "Error while establishing connection.");
 		} finally {
 			try {
-				ps.close();
+				preparedStatement.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			try {
-				rs.close();
+				resultSet.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			try {
-				SqliteConnection.establishSqliteConnection().close();
+				connection.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
@@ -134,17 +132,19 @@ public class DriverExistenceTIMS {
 	}
 
 	public static boolean isNIC(String nic) {
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		Connection connection = null;
 		boolean checkNic = false;
-		String query = "SELECT * FROM `DRIVER` WHERE `NIC NUMBER`= ?";
+		String query = "SELECT * FROM `driver` WHERE `nic`= ?";
 		try {
-			ps = SqliteConnection.establishSqliteConnection().prepareStatement(query);
-			ps.setString(1, nic);
+			connection = MySQLConnection.establishMySqlConnection();
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, nic);
 
-			rs = ps.executeQuery();
+			resultSet = preparedStatement.executeQuery();
 
-			if (rs.next()) {
+			if (resultSet.next()) {
 				checkNic = true;
 			} else {
 				checkNic = false;
@@ -154,21 +154,18 @@ public class DriverExistenceTIMS {
 			JOptionPane.showMessageDialog(null, "Error while establishing connection.");
 		} finally {
 			try {
-				ps.close();
+				preparedStatement.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			try {
-				rs.close();
+				resultSet.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			try {
-				SqliteConnection.establishSqliteConnection().close();
+				connection.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}

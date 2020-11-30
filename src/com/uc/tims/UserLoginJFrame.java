@@ -6,12 +6,15 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import com.uc.tims.entity.Employee;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,8 +32,11 @@ public class UserLoginJFrame extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtuname;
 	private JPasswordField txtpassword;
-	private String username;
-	private String password;
+	
+	private Employee employee;
+	private PreparedStatement preparedStatement = null;
+	private ResultSet resultSet = null;
+	private Connection connection;
 
 	/**
 	 * Launch the application.
@@ -54,6 +60,8 @@ public class UserLoginJFrame extends JFrame {
 	 */
 	public UserLoginJFrame() {
 
+		employee = new Employee();
+		
 		setTitle("User login");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
 
@@ -114,26 +122,22 @@ public class UserLoginJFrame extends JFrame {
 		btnLogin.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				UserLoginJFrame userLoginJFrameObject = new UserLoginJFrame();
-				userLoginJFrameObject.setUsername(txtuname.getText());
-				userLoginJFrameObject.setPassword(String.valueOf(txtpassword.getPassword()));
-				System.out.println("User name " + userLoginJFrameObject.getUsername());
-
-				PreparedStatement ps = null;
-				ResultSet rs = null;
+				employee.setUserName(txtuname.getText());
+				employee.setPassword(String.valueOf(txtpassword.getPassword()));
+				System.out.println("User name " + employee.getUserName());
 
 				try {
+					connection = MySQLConnection.establishMySqlConnection();
+					
+					preparedStatement = connection.prepareStatement(MySQLQuery.getSqlQueryForUserLogIn());
+					preparedStatement.setString(1, employee.getUserName());
+					preparedStatement.setString(2, employee.getPassword());
+					System.out.println("User name " + employee.getUserName());
+					resultSet = preparedStatement.executeQuery();
 
-					ps = SqliteConnection.establishSqliteConnection()
-							.prepareStatement(MySQLQuery.getSqlQueryForUserLogIn());
-					ps.setString(1, userLoginJFrameObject.getUsername());
-					ps.setString(2, userLoginJFrameObject.getPassword());
-					System.out.println("User name " + userLoginJFrameObject.getUsername());
-					rs = ps.executeQuery();
-
-					if (rs.next()) {
+					if (resultSet.next()) {
 						JOptionPane.showMessageDialog(null, "Login successful");
-						StaticMembers.name = rs.getString("USERNAME");
+						StaticMembers.name = resultSet.getString("username");
 						StaticMembers.adminLoggedin = false;
 						DashboardJFrame dashboardJFrame = new DashboardJFrame();
 						dashboardJFrame.setVisible(true);
@@ -145,25 +149,21 @@ public class UserLoginJFrame extends JFrame {
 				}
 
 				catch (SQLException e1) {
-					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(null, "Error while establishing connection.");
 				} finally {
 					try {
-						ps.close();
+						preparedStatement.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					try {
-						rs.close();
+						resultSet.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					try {
-						SqliteConnection.establishSqliteConnection().close();
+						connection.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				}
@@ -173,22 +173,6 @@ public class UserLoginJFrame extends JFrame {
 		btnLogin.setBounds(284, 322, 114, 36);
 		contentPane.add(btnLogin);
 
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 }

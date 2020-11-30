@@ -5,6 +5,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import com.uc.tims.entity.Employee;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -12,6 +15,7 @@ import java.awt.Font;
 import javax.swing.WindowConstants;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
@@ -28,6 +32,10 @@ public class PasswordChange extends JFrame {
 	private String oldPassword;
 	private String newPassword;
 	private String retypePassword;
+	
+	private Employee employee;
+	private PreparedStatement preparedStatement = null;
+	private Connection connection = null;
 
 	/**
 	 * Launch the application.
@@ -50,6 +58,9 @@ public class PasswordChange extends JFrame {
 	 * Create the frame.
 	 */
 	public PasswordChange() {
+		
+		employee = new Employee();
+		
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(100, 100, 506, 397);
@@ -81,21 +92,24 @@ public class PasswordChange extends JFrame {
 				object.setOldPassword(String.valueOf(txtOld.getPassword()));
 				object.setNewPassword(String.valueOf(txtNew.getPassword()));
 				object.setRetypePassword(String.valueOf(txtRe.getPassword()));
+				
+				employee.setPassword(object.getNewPassword());
 
-				PreparedStatement ps = null;
 				System.out.println(object.getNewPassword());
 				System.out.println(StaticMembers.name);
 
 				if (object.getNewPassword().equals(object.getRetypePassword())) {
 					if (StaticMembers.adminLoggedin) {
 						try {
-							String sqlQueryForAdminPassChange = "UPDATE `ADMIN` SET `PASSWORD`= ? WHERE `USERNAME`= ?";
-							ps = SqliteConnection.establishSqliteConnection()
-									.prepareStatement(sqlQueryForAdminPassChange);
-							ps.setString(1, object.getNewPassword());
-							ps.setString(2, StaticMembers.name);
+							String sqlQueryForAdminPassChange = "UPDATE `employee` SET `password`= ? WHERE `username`= ?";
+							
+							connection = MySQLConnection.establishMySqlConnection();
+							preparedStatement = connection.prepareStatement(sqlQueryForAdminPassChange);
+							
+							preparedStatement.setString(1, employee.getPassword());
+							preparedStatement.setString(2, StaticMembers.name);
 
-							if (ps.executeUpdate() > 0) {
+							if (preparedStatement.executeUpdate() > 0) {
 								JOptionPane.showMessageDialog(null, "Successfully Password Changed!");
 								DashboardJFrame dashboardJFrame = new DashboardJFrame();
 								dashboardJFrame.setVisible(true);
@@ -105,32 +119,31 @@ public class PasswordChange extends JFrame {
 								JOptionPane.showMessageDialog(null, "Sorry, Check your fields");
 							}
 						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
 							JOptionPane.showMessageDialog(null, "Error while establishing connection.");
 						} finally {
 							try {
-								ps.close();
+								preparedStatement.close();
 							} catch (SQLException e1) {
-								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
 							try {
-								SqliteConnection.establishSqliteConnection().close();
+								connection.close();
 							} catch (SQLException e1) {
-								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
 						}
 					} else {
 						try {
-							String sqlQueryForUserPassChange = "UPDATE `USER` SET `PASSWORD`= ? WHERE `USERNAME`= ?";
-							ps = SqliteConnection.establishSqliteConnection()
-									.prepareStatement(sqlQueryForUserPassChange);
+							String sqlQueryForUserPassChange = "UPDATE `employee` SET `password`= ? WHERE `username`= ?";
+							
+							connection = MySQLConnection.establishMySqlConnection();
+							
+							preparedStatement = connection.prepareStatement(sqlQueryForUserPassChange);
 
-							ps.setString(1, object.getNewPassword());
-							ps.setString(2, StaticMembers.name);
+							preparedStatement.setString(1, employee.getPassword());
+							preparedStatement.setString(2, StaticMembers.name);
 
-							if (ps.executeUpdate() > 0) {
+							if (preparedStatement.executeUpdate() > 0) {
 								JOptionPane.showMessageDialog(null, "Successfully Password Changed!");
 								DashboardJFrame dashboardJFrame = new DashboardJFrame();
 								dashboardJFrame.setVisible(true);
@@ -140,19 +153,16 @@ public class PasswordChange extends JFrame {
 								JOptionPane.showMessageDialog(null, "Sorry, Check your fields");
 							}
 						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
 							JOptionPane.showMessageDialog(null, "Error while establishing connection.");
 						} finally {
 							try {
-								ps.close();
+								preparedStatement.close();
 							} catch (SQLException e1) {
-								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
 							try {
-								SqliteConnection.establishSqliteConnection().close();
+								connection.close();
 							} catch (SQLException e1) {
-								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
 						}
@@ -226,4 +236,29 @@ public class PasswordChange extends JFrame {
 	public void setRetypePassword(String retypePassword) {
 		this.retypePassword = retypePassword;
 	}
+
+	public Employee getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
+	}
+
+	public PreparedStatement getPreparedStatement() {
+		return preparedStatement;
+	}
+
+	public void setPreparedStatement(PreparedStatement preparedStatement) {
+		this.preparedStatement = preparedStatement;
+	}
+
+	public Connection getConnection() {
+		return connection;
+	}
+
+	public void setConnection(Connection connection) {
+		this.connection = connection;
+	}
+	
 }

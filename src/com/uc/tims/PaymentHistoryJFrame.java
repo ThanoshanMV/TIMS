@@ -30,6 +30,7 @@ import java.awt.Color;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,6 +45,10 @@ public class PaymentHistoryJFrame extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtsearch;
 	private JTable table;
+	
+	private ResultSet resultSet = null;
+	private PreparedStatement preparedStatement = null;
+	private Connection connection = null;
 
 	/**
 	 * Launch the application.
@@ -78,7 +83,7 @@ public class PaymentHistoryJFrame extends JFrame {
 		contentPane.setLayout(null);
 
 		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] { "PARK", "NIC NUMBER" }));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] { "park", "nic" }));
 		comboBox.setFont(new Font("Dialog", Font.BOLD, 15));
 		comboBox.setBounds(24, 56, 207, 32);
 		contentPane.add(comboBox);
@@ -94,42 +99,37 @@ public class PaymentHistoryJFrame extends JFrame {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				txtsearch.setText(txtsearch.getText().toUpperCase());
-
-				PreparedStatement ps = null;
-				ResultSet rs = null;
 				try {
 					String selection = (String) comboBox.getSelectedItem();
-					String query = "SELECT `PARK`,`NAME`,`NIC NUMBER`,`2013`,`2014`,`2015`,`2016`,`2017`,`2018`,`2019`,`2020`,`2021`,`2022`,`TOTAL` FROM `PAYMENT` WHERE `"
-							+ selection + "` = ?";
+					String query = "SELECT `park`,`name`,`nic`,`year2013`,`year2014`,`year2015`,`year2016`,`year2017`,`year2018`,`year2019`,`year2020`,`year2021`,`year2022`,`totalpayment` FROM `payment` WHERE `" + selection + "` = ?";
 					System.out.println(query);
-					ps = SqliteConnection.establishSqliteConnection().prepareStatement(query);
-					ps.setString(1, txtsearch.getText());
-					rs = ps.executeQuery();
+					
+					connection = MySQLConnection.establishMySqlConnection();
+					
+					preparedStatement = connection.prepareStatement(query);
+					preparedStatement.setString(1, txtsearch.getText());
+					resultSet = preparedStatement.executeQuery();
 
-					table.setModel(DbUtils.resultSetToTableModel(rs));
+					table.setModel(DbUtils.resultSetToTableModel(resultSet));
 
 					setJTableColumnsWidth(table, 1024, 5, 20, 10, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 10);
 
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} finally {
 					try {
-						ps.close();
+						preparedStatement.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					try {
-						rs.close();
+						resultSet.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					try {
-						SqliteConnection.establishSqliteConnection().close();
+						connection.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				}
@@ -203,50 +203,45 @@ public class PaymentHistoryJFrame extends JFrame {
 				int p = JOptionPane.showConfirmDialog(null, "Do you really want to delete ?", "Delete",
 						JOptionPane.YES_NO_OPTION);
 				if (p == 0) {
-					PreparedStatement pst = null;
-					ResultSet rsm = null;
-					String sql = "DELETE FROM `PAYMENT` WHERE `NAME` = ?";
+					String sql = "DELETE FROM `payment` WHERE `name` = ?";
 					try {
-						pst = SqliteConnection.establishSqliteConnection().prepareStatement(sql);
-						pst.setString(1, StaticMembers.paymentDeleteName);
+						
+						connection = MySQLConnection.establishMySqlConnection();
+						
+						preparedStatement = connection.prepareStatement(sql);
+						preparedStatement.setString(1, StaticMembers.paymentDeleteName);
 						System.out.println(StaticMembers.paymentDeleteName);
-						if (pst.executeUpdate() > 0) {
+						if (preparedStatement.executeUpdate() > 0) {
 							JOptionPane.showMessageDialog(null, "Successfully Deleted!");
-							PreparedStatement ps = null;
-							ResultSet rs = null;
 							try {
 								String selection = (String) comboBox.getSelectedItem();
-								String query = "SELECT `PARK`,`NAME`,`NIC NUMBER`,`2013`,`2014`,`2015`,`2016`,`2017`,`2018`,`2019`,`2020`,`2021`,`2022`,`TOTAL` FROM `PAYMENT` WHERE `"
+								String query = "SELECT `park`,`name`,`nic`,`year2013`,`year2014`,`year2015`,`year2016`,`year2017`,`year2018`,`year2019`,`year2020`,`year2021`,`year2022`,`totalpayment` FROM `payment` WHERE `"
 										+ selection + "` = ?";
 								System.out.println(query);
-								ps = SqliteConnection.establishSqliteConnection().prepareStatement(query);
-								ps.setString(1, txtsearch.getText());
-								rs = ps.executeQuery();
+								preparedStatement = connection.prepareStatement(query);
+								preparedStatement.setString(1, txtsearch.getText());
+								resultSet = preparedStatement.executeQuery();
 
-								table.setModel(DbUtils.resultSetToTableModel(rs));
+								table.setModel(DbUtils.resultSetToTableModel(resultSet));
 
 								setJTableColumnsWidth(table, 1024, 5, 20, 10, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 10);
 
 							} catch (SQLException e1) {
-								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							} finally {
 								try {
-									ps.close();
+									preparedStatement.close();
 								} catch (SQLException e1) {
-									// TODO Auto-generated catch block
 									e1.printStackTrace();
 								}
 								try {
-									rs.close();
+									resultSet.close();
 								} catch (SQLException e1) {
-									// TODO Auto-generated catch block
 									e1.printStackTrace();
 								}
 								try {
-									SqliteConnection.establishSqliteConnection().close();
+									connection.close();
 								} catch (SQLException e1) {
-									// TODO Auto-generated catch block
 									e1.printStackTrace();
 								}
 							}
@@ -258,9 +253,13 @@ public class PaymentHistoryJFrame extends JFrame {
 						JOptionPane.showMessageDialog(null, e1);
 					} finally {
 						try {
-							pst.close();
+							preparedStatement.close();
 						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						try {
+							connection.close();
+						} catch (SQLException e1) {
 							e1.printStackTrace();
 						}
 					}

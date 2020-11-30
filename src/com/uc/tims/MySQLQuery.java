@@ -12,7 +12,7 @@ public class MySQLQuery {
 	 */
 	private static String sqlQueryForUserRegistration = "INSERT INTO `employee`(`roleid`,`name`,`username`,`nic`,`job`,`password`) VALUES (?,?,?,?,?,?)";
 	
-	private static String sqlQueryForUserLogIn = "SELECT * FROM `USER` WHERE `USERNAME`= ? AND `PASSWORD`= ?";
+	private static String sqlQueryForUserLogIn = "SELECT * FROM `employee` WHERE `username`= ? AND `password`= ?";
 	
 	
 	/**
@@ -24,7 +24,7 @@ public class MySQLQuery {
 	
 	private static String sqlQueryForSelectDriverByID = "SELECT `id` FROM `driver` WHERE `nic` = ?";
 
-	private static String sqlQueryForChooseDriverToEdit = "SELECT * FROM `DRIVER` WHERE `PARK`= ? AND `NIC NUMBER`= ?";
+	private static String sqlQueryForChooseDriverToEdit = "SELECT * FROM `driver` WHERE `park`= ? AND `nic`= ?";
 	
 	private static String sqlQueryForSelectDriverDetailsForSearchOperartion = "SELECT * FROM `driver` WHERE `parkno`= ?";
 	

@@ -6,11 +6,14 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import com.uc.tims.entity.Driver;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,8 +34,11 @@ public class ChooseEditDriverJFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtnicnumber;
-	private String park;
-	private String nicnumber;
+	
+	private Driver driver; 
+	private PreparedStatement preparedStatement = null;
+	private ResultSet resultSet = null;
+	private Connection connection = null;
 
 	/**
 	 * Launch the application.
@@ -58,6 +64,8 @@ public class ChooseEditDriverJFrame extends JFrame {
 
 		setTitle("Details of driver");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
+		
+		driver = new Driver();
 
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -107,33 +115,28 @@ public class ChooseEditDriverJFrame extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ChooseEditDriverJFrame obj = new ChooseEditDriverJFrame();
-				obj.setPark((String) comboBox.getSelectedItem());
-				obj.setNicnumber(txtnicnumber.getText());
-
-				PreparedStatement ps = null;
-				ResultSet rs = null;
-
+				driver.setPark((String) comboBox.getSelectedItem());
+				driver.setNic(txtnicnumber.getText());
 				try {
+					connection = MySQLConnection.establishMySqlConnection();
+					
+					preparedStatement = connection.prepareStatement(MySQLQuery.getSqlQueryForChooseDriverToEdit());
+					preparedStatement.setString(1, driver.getPark());
+					preparedStatement.setString(2, driver.getNic());
 
-					ps = SqliteConnection.establishSqliteConnection()
-							.prepareStatement(MySQLQuery.getSqlQueryForChooseDriverToEdit());
-					ps.setString(1, obj.getPark());
-					ps.setString(2, obj.getNicnumber());
+					resultSet = preparedStatement.executeQuery();
 
-					rs = ps.executeQuery();
-
-					if (rs.next()) {
+					if (resultSet.next()) {
 						JOptionPane.showMessageDialog(null, "Driver Connected");
-						StaticMembers.park = rs.getString("PARK");
-						StaticMembers.parkNo = rs.getString("PARK NO");
-						StaticMembers.wheelNo = rs.getString("WHEEL NO");
-						StaticMembers.driverName = rs.getString("DRIVER NAME");
-						StaticMembers.address = rs.getString("ADDRESS");
-						StaticMembers.nic = rs.getString("NIC NUMBER");
-						StaticMembers.phoneNumber = rs.getString("PHONE NUMBER");
-						StaticMembers.gs = rs.getString("GS");
-						StaticMembers.imageURL = rs.getString("IMAGEURL");
+						StaticMembers.park = resultSet.getString("park");
+						StaticMembers.parkNo = resultSet.getString("parkno");
+						StaticMembers.wheelNo = resultSet.getString("wheelno");
+						StaticMembers.driverName = resultSet.getString("name");
+						StaticMembers.address = resultSet.getString("address");
+						StaticMembers.nic = resultSet.getString("nic");
+						StaticMembers.phoneNumber = resultSet.getString("phoneno");
+						StaticMembers.gs = resultSet.getString("gs");
+						StaticMembers.imageURL = resultSet.getString("imageurl");
 						EditAutoDriverFormJFrame editAutoDriverJFrame = new EditAutoDriverFormJFrame();
 						editAutoDriverJFrame.setVisible(true);
 						editAutoDriverJFrame.setLocationRelativeTo(null);
@@ -145,25 +148,21 @@ public class ChooseEditDriverJFrame extends JFrame {
 				}
 
 				catch (SQLException e1) {
-					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(null, "Error while establishing connection.");
 				} finally {
 					try {
-						ps.close();
+						preparedStatement.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					try {
-						rs.close();
+						resultSet.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					try {
-						SqliteConnection.establishSqliteConnection().close();
+						connection.close();
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				}
@@ -189,20 +188,14 @@ public class ChooseEditDriverJFrame extends JFrame {
 
 	}
 
-	public String getNicnumber() {
-		return nicnumber;
+	public Driver getDriver() {
+		return driver;
 	}
 
-	public void setNicnumber(String nicnumber) {
-		this.nicnumber = nicnumber;
+	public void setDriver(Driver driver) {
+		this.driver = driver;
 	}
 
-	public String getPark() {
-		return park;
-	}
 
-	public void setPark(String park) {
-		this.park = park;
-	}
 
 }
