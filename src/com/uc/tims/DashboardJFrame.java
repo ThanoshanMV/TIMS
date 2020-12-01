@@ -67,8 +67,6 @@ public class DashboardJFrame extends JFrame {
 				autoDriverRegistrationJFrame.setVisible(true);
 				autoDriverRegistrationJFrame.setLocationRelativeTo(null);
 				dispose();
-				SqliteConnection.createDriverTable();
-				SqliteConnection.createPaymentTable();
 			}
 		});
 		btnAddEntry.setBounds(74, 109, 130, 39);

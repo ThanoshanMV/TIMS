@@ -107,7 +107,7 @@ public class SummaryJFrame extends JFrame {
 				e1.printStackTrace();
 			}
 			try {
-				SqliteConnection.establishSqliteConnection().close();
+				connection.close();
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}

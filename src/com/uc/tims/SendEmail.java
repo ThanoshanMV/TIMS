@@ -18,7 +18,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.swing.JOptionPane;
 
-public class SendEmail {
+/*public class SendEmail {
 
 	static long dbTimeInMilli;
 	static long actualTimeInMilli;
@@ -136,4 +136,4 @@ public class SendEmail {
 			// Do nothing
 		}
 	}
-}
+}*/

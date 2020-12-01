@@ -21,6 +21,7 @@ import javax.swing.JTable;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -46,6 +47,7 @@ public class PrintJFrame extends JFrame {
 
 	private PreparedStatement preparedStatement = null;
 	private ResultSet resultSet = null;
+	private Connection connection = null;
 
 	/**
 	 * Launch the application.
@@ -118,11 +120,14 @@ public class PrintJFrame extends JFrame {
 			public void keyReleased(KeyEvent e) {
 				txtprint.setText(txtprint.getText().toUpperCase());
 				try {
+					
+					connection = MySQLConnection.establishMySqlConnection();
+					
 					String selection = (String) comboBoxPrint.getSelectedItem();
 					String query = "SELECT `park`,`parkno`,`wheelno`,`name`,`address`,`nic`,`phoneno`,`gs` FROM `driver` WHERE `"
 							+ selection + "` = ?";
 					System.out.println(query);
-					preparedStatement = MySQLConnection.establishMySqlConnection().prepareStatement(query);
+					preparedStatement = connection.prepareStatement(query);
 					preparedStatement.setString(1, txtprint.getText());
 					resultSet = preparedStatement.executeQuery();
 
@@ -144,7 +149,7 @@ public class PrintJFrame extends JFrame {
 						e1.printStackTrace();
 					}
 					try {
-						SqliteConnection.establishSqliteConnection().close();
+						connection.close();
 					} catch (SQLException e1) {
 						e1.printStackTrace();
 					}
