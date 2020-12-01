@@ -7,6 +7,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.uc.tims.entity.Driver;
+import com.uc.tims.validator.mysqlvalidator.DriverValidator;
+import com.uc.tims.validator.mysqlvalidator.MySQLValidatable;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -51,6 +53,7 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 
 	
 	private Driver driver; 
+	private MySQLValidatable driverValidator;
 	private Connection connection; 
 	private PreparedStatement preparedStatement;
 
@@ -78,6 +81,9 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 		
 		// creating new driver object
 		setDriver(new Driver());
+		
+		// create DriverValidator object
+		driverValidator = new DriverValidator();
 		
 		setTitle("Driver registration form");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
@@ -186,23 +192,23 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 
 				if (driver.getParkNumber().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid park no!");
-				} else if (DriverExistenceTIMS.isParkNoExist(driver.getParkNumber())) {
+				} else if (driverValidator.isParkNumberExists(driver.getParkNumber())) {
 					JOptionPane.showMessageDialog(null, "Sorry, Park Number has already taken!");
 				}
 				else if (driver.getWheelNumber().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid wheel no!");
 				}
-				else if (DriverExistenceTIMS.isWheelNO(driver.getWheelNumber())) {
+				else if (driverValidator.isWheelNumberExists(driver.getWheelNumber())) {
 					JOptionPane.showMessageDialog(null, "Sorry, Wheel Number has already taken!");
 				} else if (driver.getName().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid driver name!");
-				} else if (DriverExistenceTIMS.isName(driver.getName())) {
+				} else if (driverValidator.isNameExists(driver.getName())) {
 					JOptionPane.showMessageDialog(null, "Sorry, Driver Name has already taken!");
 				} else if (driver.getAddress().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid address!");
 				} else if (driver.getNic().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid nic number!");
-				} else if (DriverExistenceTIMS.isNIC(driver.getNic())) {
+				} else if (driverValidator.isNICExists(driver.getNic())) {
 					JOptionPane.showMessageDialog(null, "Sorry, NIC has already taken!");
 				} else if (!((driver.getNic().length() == 10) || (driver.getNic().length() == 12))) {
 					JOptionPane.showMessageDialog(null, "Sorry, Check NIC length!");
@@ -427,5 +433,13 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 
 	public void setDriver(Driver driver) {
 		this.driver = driver;
+	}
+
+	public MySQLValidatable getDriverValidator() {
+		return driverValidator;
+	}
+
+	public void setDriverValidator(MySQLValidatable driverValidator) {
+		this.driverValidator = driverValidator;
 	}
 }
