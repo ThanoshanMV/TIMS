@@ -33,6 +33,8 @@ public class MySQLQuery {
 	private static String sqlQueryForDeleteDriverByNic = "DELETE FROM `driver` WHERE `nic` = ?";
 	
 	private static String sqlQueryForCountBy = "SELECT COUNT(`address`) FROM `driver` WHERE ? = ?";
+	
+	private static String sqlQueryForGetSummaryByParkCount = "Select park as Park, count(*) as Total from driver Group by park";
 
 	/**
 	 * Queries for payment table 
@@ -40,6 +42,7 @@ public class MySQLQuery {
 	private static String sqlQueryForInsertPaymentRow = "INSERT INTO `payment`(`id`,`name`,`nic`,`park`,`totalPayment`,`year2013`,`year2014`,`year2015`,`year2016`,`year2017`,`year2018`,`year2019`,`year2020`,`year2021`,`year2022`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static String sqlQueryForDeletePaymentByNic = "DELETE FROM `payment` WHERE `nic` = ?";
+	
 	
 	
 	public static String getSqlQueryForAdminLogIn() {
@@ -147,5 +150,16 @@ public class MySQLQuery {
 		MySQLQuery.sqlQueryForDeletePaymentByNic = sqlQueryForDeletePaymentByNic;
 	}
 
+	public static String getSqlQueryForGetSummaryByParkCount() {
+		return sqlQueryForGetSummaryByParkCount;
+	}
+
+	public static void setSqlQueryForGetSummaryByParkCount(String sqlQueryForGetSummaryByParkCount) {
+		MySQLQuery.sqlQueryForGetSummaryByParkCount = sqlQueryForGetSummaryByParkCount;
+	}
+
+	public static void setSqlQueryForDeleteDriverByNic(String sqlQueryForDeleteDriverByNic) {
+		MySQLQuery.sqlQueryForDeleteDriverByNic = sqlQueryForDeleteDriverByNic;
+	}
 	
 }

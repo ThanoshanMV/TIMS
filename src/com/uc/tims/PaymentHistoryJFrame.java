@@ -25,6 +25,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.TableColumn;
 
 import com.uc.tims.mysql.MySQLConnection;
+import com.uc.tims.mysql.MySQLQuery;
 import com.uc.tims.utilities.Printer;
 
 import net.proteanit.sql.DbUtils;
@@ -107,6 +108,8 @@ public class PaymentHistoryJFrame extends JFrame {
 				txtsearch.setText(txtsearch.getText().toUpperCase());
 				try {
 					String selection = (String) comboBox.getSelectedItem();
+					
+					// can not add to MySQLQuery class as if I put there "WHERE ? = ?" error occurs
 					String query = "SELECT `park`,`name`,`nic`,`year2013`,`year2014`,`year2015`,`year2016`,`year2017`,`year2018`,`year2019`,`year2020`,`year2021`,`year2022`,`totalpayment` FROM `payment` WHERE `" + selection + "` = ?";
 					System.out.println(query);
 					

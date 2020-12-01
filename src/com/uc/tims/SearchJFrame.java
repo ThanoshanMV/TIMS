@@ -252,6 +252,7 @@ public class SearchJFrame extends JFrame {
 					// establish MySQL connection
 					setConnection(MySQLConnection.establishMySqlConnection());
 					
+					// can not add to MySQLQuery class as if I put there "? LIKE ?" error occurs
 					String query = "SELECT `park`,`parkno`,`wheelno`,`name`,`address`,`nic`,`phoneno`,`gs` FROM `driver` WHERE `" + getSearchBy() + "` LIKE ?";
 
 					// creating prepared statement to execute parameterized query
@@ -422,6 +423,7 @@ public class SearchJFrame extends JFrame {
 						// establishing MySQL connection
 						setConnection(MySQLConnection.establishMySqlConnection());
 						
+						// can not add to MySQLQuery class as if I put there "? LIKE ?" error occurs
 						String query = "SELECT COUNT(`park`) FROM `driver` WHERE `" + getSearchBy() + "` LIKE ?";
 						
 						// creating prepared statement to execute parameterized query

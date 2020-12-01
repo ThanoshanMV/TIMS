@@ -129,6 +129,7 @@ public class PrintJFrame extends JFrame {
 					connection = MySQLConnection.establishMySqlConnection();
 					
 					String selection = (String) comboBoxPrint.getSelectedItem();
+					// can not add to MySQLQuery class as if I put there "WHERE ? = ?" error occurs
 					String query = "SELECT `park`,`parkno`,`wheelno`,`name`,`address`,`nic`,`phoneno`,`gs` FROM `driver` WHERE `"
 							+ selection + "` = ?";
 					System.out.println(query);
