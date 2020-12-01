@@ -1,4 +1,4 @@
-package com.uc.tims;
+package com.uc.tims.mysql;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -1,4 +1,4 @@
-package com.uc.tims;
+package com.uc.tims.utilities;
 
 import java.io.File;
 import java.sql.PreparedStatement;

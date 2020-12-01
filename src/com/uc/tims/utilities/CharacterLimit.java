@@ -1,4 +1,4 @@
-package com.uc.tims;
+package com.uc.tims.utilities;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;

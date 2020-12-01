@@ -9,6 +9,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
+import com.uc.tims.mysql.MySQLConnection;
+
 import net.proteanit.sql.DbUtils;
 
 import javax.swing.JTable;

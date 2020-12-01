@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import com.uc.tims.mysql.MySQLConnection;
 import com.uc.tims.utilities.Printer;
 
 import net.proteanit.sql.DbUtils;

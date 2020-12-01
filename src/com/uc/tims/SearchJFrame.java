@@ -7,6 +7,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableColumn;
+
+import com.uc.tims.mysql.MySQLConnection;
+import com.uc.tims.mysql.MySQLQuery;
+import com.uc.tims.mysql.MySQLQueryMethod;
+
 import net.proteanit.sql.DbUtils;
 
 import javax.swing.JLabel;

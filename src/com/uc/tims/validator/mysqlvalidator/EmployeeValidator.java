@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
-import com.uc.tims.MySQLConnection;
+import com.uc.tims.mysql.MySQLConnection;
 
 public class EmployeeValidator implements MySQLValidatable {
 	

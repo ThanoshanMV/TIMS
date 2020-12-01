@@ -24,6 +24,7 @@ import javax.swing.JButton;
 import javax.swing.border.LineBorder;
 import javax.swing.table.TableColumn;
 
+import com.uc.tims.mysql.MySQLConnection;
 import com.uc.tims.utilities.Printer;
 
 import net.proteanit.sql.DbUtils;

@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.uc.tims.entity.Driver;
+import com.uc.tims.mysql.MySQLConnection;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;

@@ -6,6 +6,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.uc.tims.entity.Employee;
+import com.uc.tims.mysql.MySQLConnection;
+import com.uc.tims.mysql.MySQLQuery;
 import com.uc.tims.validator.mysqlvalidator.EmployeeValidator;
 
 import javax.swing.JLabel;
