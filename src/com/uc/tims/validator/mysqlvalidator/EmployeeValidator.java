@@ -9,95 +9,20 @@ import javax.swing.JOptionPane;
 
 import com.uc.tims.MySQLConnection;
 
-public class DriverValidator implements MySQLValidatable {
+public class EmployeeValidator implements MySQLValidatable {
 	
 	private PreparedStatement preparedStatement = null;
 	private ResultSet resultSet = null;
 	private Connection connection = null;
-
-	public boolean isParkNumberExists(String parkNumber) {
-		boolean checkParkNo = false;
-		String query = "SELECT * FROM `driver` WHERE `parkno`= ?";
-		try {
-			connection = MySQLConnection.establishMySqlConnection();
-			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(1, parkNumber);
-
-			resultSet = preparedStatement.executeQuery();
-
-			if (resultSet.next()) {
-				checkParkNo = true;
-			} else {
-				checkParkNo = false;
-			}
-
-		} catch (SQLException ex) {
-			JOptionPane.showMessageDialog(null, "Error while establishing connection.");
-		} finally {
-			try {
-				preparedStatement.close();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			try {
-				resultSet.close();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			try {
-				connection.close();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-		}
-		return checkParkNo;
-	}
-
-	public boolean isWheelNumberExists(String wheelNumber) {
-		boolean checkWheelNo = false;
-		String query = "SELECT * FROM `driver` WHERE `wheelno`= ?";
-		try {
-			connection = MySQLConnection.establishMySqlConnection();
-			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(1, wheelNumber);
-
-			resultSet = preparedStatement.executeQuery();
-
-			if (resultSet.next()) {
-				checkWheelNo = true;
-			} else {
-				checkWheelNo = false;
-			}
-
-		} catch (SQLException ex) {
-			JOptionPane.showMessageDialog(null, "Error while establishing connection.");
-		} finally {
-			try {
-				preparedStatement.close();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			try {
-				resultSet.close();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			try {
-				connection.close();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-		}
-		return checkWheelNo;
 	
-	}
-
 	@Override
 	public boolean isNameExists(String name) {
 		boolean checkName = false;
-		String query = "SELECT * FROM `driver` WHERE `name`= ?";
+		String query = "SELECT * FROM `employee` WHERE `name`= ?";
 		try {
+			
 			connection = MySQLConnection.establishMySqlConnection();
+			
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1, name);
 
@@ -134,19 +59,25 @@ public class DriverValidator implements MySQLValidatable {
 
 	@Override
 	public boolean isUserNameExists(String name) {
-		boolean checkName = false;
-		String query = "SELECT * FROM `driver` WHERE `username`= ?";
+
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		Connection connection = null;
+		boolean checkUserName = false;
+		String query = "SELECT * FROM `employee` WHERE `username`= ?";
 		try {
+			
 			connection = MySQLConnection.establishMySqlConnection();
+			
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1, name);
 
 			resultSet = preparedStatement.executeQuery();
 
 			if (resultSet.next()) {
-				checkName = true;
+				checkUserName = true;
 			} else {
-				checkName = false;
+				checkUserName = false;
 			}
 
 		} catch (SQLException ex) {
@@ -168,13 +99,15 @@ public class DriverValidator implements MySQLValidatable {
 				e1.printStackTrace();
 			}
 		}
-		return checkName;
+		return checkUserName;
+	
 	}
 
 	@Override
 	public boolean isNICExists(String nic) {
+
 		boolean checkNic = false;
-		String query = "SELECT * FROM `driver` WHERE `nic`= ?";
+		String query = "SELECT * FROM `employee` WHERE `nic`= ?";
 		try {
 			connection = MySQLConnection.establishMySqlConnection();
 			preparedStatement = connection.prepareStatement(query);
@@ -208,6 +141,7 @@ public class DriverValidator implements MySQLValidatable {
 			}
 		}
 		return checkNic;
+	
 	
 	}
 

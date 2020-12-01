@@ -53,7 +53,7 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 
 	
 	private Driver driver; 
-	private MySQLValidatable driverValidator;
+	private DriverValidator driverValidator;
 	private Connection connection; 
 	private PreparedStatement preparedStatement;
 
@@ -439,7 +439,7 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 		return driverValidator;
 	}
 
-	public void setDriverValidator(MySQLValidatable driverValidator) {
+	public void setDriverValidator(DriverValidator driverValidator) {
 		this.driverValidator = driverValidator;
 	}
 }

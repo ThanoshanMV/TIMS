@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.uc.tims.entity.Employee;
+import com.uc.tims.validator.mysqlvalidator.EmployeeValidator;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -36,6 +37,7 @@ public class UserRegistrationJFrame extends JFrame {
 	private JPasswordField txtpassword;
 	
 	private Employee employee; 
+	private EmployeeValidator employeeValidator;
 	private Connection connection; 
 	private PreparedStatement preparedStatement;
 
@@ -63,6 +65,8 @@ public class UserRegistrationJFrame extends JFrame {
 		
 		// set new employee instance 
 		setEmployee(new Employee());
+		
+		employeeValidator = new EmployeeValidator();
 		
 		setTitle("User registration form");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
@@ -142,7 +146,7 @@ public class UserRegistrationJFrame extends JFrame {
 
 				if (employee.getName().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid name!");
-				} else if (UserExistenceTIMS.isNameExist(employee.getName())) {
+				} else if (employeeValidator.isNameExists(employee.getName())) {
 					JOptionPane.showMessageDialog(null, "Sorry, name has already taken!");
 				}
 
@@ -150,7 +154,7 @@ public class UserRegistrationJFrame extends JFrame {
 					JOptionPane.showMessageDialog(null, "Please add a valid username!");
 				}
 
-				else if (UserExistenceTIMS.isUserNameExist(employee.getUserName())) {
+				else if (employeeValidator.isUserNameExists(employee.getUserName())) {
 					JOptionPane.showMessageDialog(null, "Sorry, username has already taken!");
 				} else if (employee.getPassword().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid password!");
@@ -159,7 +163,11 @@ public class UserRegistrationJFrame extends JFrame {
 				} else if (!((employee.getNic().length() == 10)
 						|| (employee.getNic().length() == 12))) {
 					JOptionPane.showMessageDialog(null, "Sorry, Check NIC length!");
-				} else if (employee.getJob().equals("")) {
+				}
+				else if (employeeValidator.isNICExists(employee.getNic())) {
+					JOptionPane.showMessageDialog(null, "Sorry, NIC has already taken!");
+				}
+				else if (employee.getJob().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid UC position!");
 				} else {
 					try {
@@ -264,4 +272,13 @@ public class UserRegistrationJFrame extends JFrame {
 	public void setPreparedStatement(PreparedStatement preparedStatement) {
 		this.preparedStatement = preparedStatement;
 	}
+
+	public EmployeeValidator getEmployeeValidator() {
+		return employeeValidator;
+	}
+
+	public void setEmployeeValidator(EmployeeValidator employeeValidator) {
+		this.employeeValidator = employeeValidator;
+	}
+	
 }

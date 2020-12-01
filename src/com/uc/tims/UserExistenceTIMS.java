@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
-public class UserExistenceTIMS {
+/*public class UserExistenceTIMS {
 
 	public static boolean isUserNameExist(String username) {
 		PreparedStatement preparedStatement = null;
@@ -94,4 +94,4 @@ public class UserExistenceTIMS {
 		}
 		return checkName;
 	}
-}
+}*/
