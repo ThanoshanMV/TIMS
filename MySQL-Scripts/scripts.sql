@@ -103,13 +103,46 @@ SELECT * FROM payment;
 
 SELECT * FROM role;
 
-# delete all rows
-DELETE FROM payment;
+# delete all rows from payment table
+# DELETE FROM payment;
 
-DELETE FROM driver;
+# delete all rows from driver table
+# DELETE FROM driver;
 
 # we can set auto increment from any number
 # ALTER TABLE driver AUTO_INCREMENT = 1;
+
+# show all tables in tims database
+SHOW TABLES FROM tims;
+
+# show role table's columns 
+SHOW COLUMNS FROM role;
+
+# constraining rolename to be not null
+ALTER TABLE role
+MODIFY COLUMN rolename VARCHAR(20) NOT NULL;
+
+# show role table's columns 
+SHOW COLUMNS FROM employee;
+
+# constraining username to be not null
+ALTER TABLE employee
+MODIFY COLUMN username VARCHAR(255) NOT NULL;
+
+# changing phoneno in driver's table from INT to VARCHAR for the purpose of simplicity
+ALTER TABLE driver
+MODIFY COLUMN phoneno VARCHAR(255);
+
+# show driver table's columns 
+SHOW COLUMNS FROM driver;
+
+# constrainting wheelno, parkno to be not null in the driver's table
+ALTER TABLE driver
+MODIFY COLUMN wheelno VARCHAR(255) NOT NULL;
+
+ALTER TABLE driver
+MODIFY COLUMN parkno VARCHAR(255) NOT NULL;
+
 
 
 
