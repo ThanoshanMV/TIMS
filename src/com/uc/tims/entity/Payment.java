@@ -108,6 +108,14 @@ public class Payment extends Person {
 	public void setYear2022(double year2022) {
 		this.year2022 = year2022;
 	}
+
+	@Override
+	public String toString() {
+		return "Payment [totalPayment=" + totalPayment + ", year2013=" + year2013 + ", year2014=" + year2014
+				+ ", year2015=" + year2015 + ", year2016=" + year2016 + ", year2017=" + year2017 + ", year2018="
+				+ year2018 + ", year2019=" + year2019 + ", year2020=" + year2020 + ", year2021=" + year2021
+				+ ", year2022=" + year2022 + "]";
+	}
 	
 	
 }

@@ -30,6 +30,10 @@ public abstract class Person {
 	public void setNic(String nic) {
 		this.nic = nic;
 	}
+	@Override
+	public String toString() {
+		return "Person [id=" + id + ", name=" + name + ", nic=" + nic + "]";
+	}
 	
 	
 }

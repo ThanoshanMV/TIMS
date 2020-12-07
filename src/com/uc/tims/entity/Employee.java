@@ -45,5 +45,11 @@ public class Employee extends Person {
 		this.password = password;
 	}
 	
+	@Override
+	public String toString() {
+		return "Employee [roleId=" + roleId + ", userName=" + userName + ", email=" + email + ", job=" + job
+				+ ", password=" + password + "]";
+	}
+	
 	
 }
