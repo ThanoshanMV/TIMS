@@ -61,10 +61,8 @@ public class MySQLQueryMethod {
 	public int getDriverIdByNic(String nic) {
 		// establishing MySQL connection
 		connection = MySQLConnection.establishMySqlConnection();
-		
 		try {
 			preparedStatement = connection.prepareStatement(MySQLQuery.sqlQueryForSelectDriverByID);
-			
 			preparedStatement.setString(1, nic);
 			
 			// execute the selected query and return an instance of ResultSet
