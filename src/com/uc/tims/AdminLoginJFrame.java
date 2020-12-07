@@ -9,6 +9,7 @@ import javax.swing.border.EmptyBorder;
 import com.uc.tims.entity.Employee;
 import com.uc.tims.mysql.MySQLConnection;
 import com.uc.tims.mysql.MySQLQuery;
+import com.uc.tims.mysql.MySQLQueryMethod;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -23,6 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
+import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.Cursor;
 import java.awt.Color;
@@ -38,6 +40,7 @@ public class AdminLoginJFrame extends JFrame {
 	private Connection connection; 
 	private PreparedStatement preparedStatement;
 	private ResultSet resultSet;
+	private MySQLQueryMethod mySQLQueryMethod;
 
 	/**
 	 * Launch the application.
@@ -116,72 +119,43 @@ public class AdminLoginJFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				employee.setUserName(txtuname.getText());
 				employee.setPassword(String.valueOf(txtpassword.getPassword()));
-
-				try {
-					// establishing MySQL connection
-					connection = MySQLConnection.establishMySqlConnection();
-					
-					// creating prepared statement to execute parameterized query
-					preparedStatement = connection.prepareStatement(MySQLQuery.sqlQueryForAdminLogIn);
-					
-					// setting vales using PreparedStatement's setter methods 
-					preparedStatement.setString(1, employee.getUserName());
-					preparedStatement.setString(2, employee.getPassword());
 					
 					// execute the selected query and return an instance of ResultSet
-					resultSet = preparedStatement.executeQuery();
-					
-					// printing them for help
-					System.out.println("Username is " + employee.getUserName());
-					System.out.println("Password is " + employee.getPassword());
+					resultSet = mySQLQueryMethod.loginAdmin(employee);
 					
 					// resultSet.next() returns true if the new current row is valid otherwise false if there are no more rows
-					if (resultSet.next()) {
-						// valid row from query is available!
-						JOptionPane.showMessageDialog(null, "Login successful");
-						
-						// getting username column value for this specified row 
-						StaticMembers.name = resultSet.getString("username");
-						
-						// setting adminLoggenin as true becaouse of admin's login was success
-						StaticMembers.adminLoggedin = true;
-						
-						// create instance of AdminHandeledJFrame
-						AdminHandeledJFrame adminHandeledJFrame = new AdminHandeledJFrame();
-						
-						// make it visible 
-						adminHandeledJFrame.setVisible(true);
-						
-						// center this JFrame
-						adminHandeledJFrame.setLocationRelativeTo(null);
-						
-						// dispose the current JFrame
-						dispose();
-					} 
-					else {
-						// no valid row for that query is available!
-						JOptionPane.showMessageDialog(null, "Check Username or Password.");
-					}
-				} catch (SQLException e1) {
-					JOptionPane.showMessageDialog(null, "Error while establishing connection.");
-				} finally {
 					try {
-						resultSet.close();
+						if (resultSet.next()) {
+							// valid row from query is available!
+							JOptionPane.showMessageDialog(null, "Login successful");
+							
+							// getting username column value for this specified row 
+							StaticMembers.name = resultSet.getString("username");
+							
+							// setting adminLoggenin as true becaouse of admin's login was success
+							StaticMembers.adminLoggedin = true;
+							
+							// create instance of AdminHandeledJFrame
+							AdminHandeledJFrame adminHandeledJFrame = new AdminHandeledJFrame();
+							
+							// make it visible 
+							adminHandeledJFrame.setVisible(true);
+							
+							// center this JFrame
+							adminHandeledJFrame.setLocationRelativeTo(null);
+							
+							// dispose the current JFrame
+							dispose();
+						} 
+						else {
+							// no valid row for that query is available!
+							JOptionPane.showMessageDialog(null, "Check Username or Password.");
+						}
+					} catch (HeadlessException e1) {
+						e1.printStackTrace();
 					} catch (SQLException e1) {
 						e1.printStackTrace();
 					}
-					try {
-						preparedStatement.close();
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-					}
-					try {
-						connection.close();
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-					}
-				}
-
 			}
 		});
 		

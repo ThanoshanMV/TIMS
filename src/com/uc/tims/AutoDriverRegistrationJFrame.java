@@ -1,48 +1,32 @@
 package com.uc.tims;
 
+import java.awt.Cursor;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.File;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
 import com.uc.tims.entity.Driver;
-import com.uc.tims.mysql.MySQLConnection;
-import com.uc.tims.mysql.MySQLQuery;
 import com.uc.tims.mysql.MySQLQueryMethod;
 import com.uc.tims.utilities.CharacterLimit;
 import com.uc.tims.validator.mysqlvalidator.DriverValidator;
-import com.uc.tims.validator.mysqlvalidator.MySQLValidatable;
-
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.awt.event.ActionEvent;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import javax.swing.JFileChooser;
-import java.awt.Font;
-import java.awt.Toolkit;
-
-import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
-
-import java.awt.Cursor;
 
 public class AutoDriverRegistrationJFrame extends JFrame {
 
@@ -55,13 +39,9 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 	private JTextField txtphonenumber;
 	private JTextField txtImageUrl;
 
-	
-	private Driver driver; 
+	private Driver driver;
 	private DriverValidator driverValidator;
-	private Connection connection; 
-	private PreparedStatement preparedStatement;
 	private MySQLQueryMethod mySQLQueryMethod;
-
 
 	/**
 	 * Launch the application.
@@ -84,13 +64,16 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public AutoDriverRegistrationJFrame() {
-		
+
 		// creating new driver object
-		setDriver(new Driver());
-		
+		driver = new Driver();
+
 		// create DriverValidator object
 		driverValidator = new DriverValidator();
-		
+
+		// create MySQLQueryMethod instance
+		mySQLQueryMethod = new MySQLQueryMethod();
+
 		setTitle("Driver registration form");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
 
@@ -195,16 +178,15 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 				driver.setPhoneNumber(txtphonenumber.getText());
 				driver.setGsDecision((String) comboBoxGs.getSelectedItem());
 				driver.setImageUrl(txtImageUrl.getText());
+				driver.setImage(driver.readImageFile(driver.getImageUrl()));
 
 				if (driver.getParkNumber().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid park no!");
 				} else if (driverValidator.isParkNumberExists(driver.getParkNumber())) {
 					JOptionPane.showMessageDialog(null, "Sorry, Park Number has already taken!");
-				}
-				else if (driver.getWheelNumber().equals("")) {
+				} else if (driver.getWheelNumber().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid wheel no!");
-				}
-				else if (driverValidator.isWheelNumberExists(driver.getWheelNumber())) {
+				} else if (driverValidator.isWheelNumberExists(driver.getWheelNumber())) {
 					JOptionPane.showMessageDialog(null, "Sorry, Wheel Number has already taken!");
 				} else if (driver.getName().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid driver name!");
@@ -226,68 +208,37 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 					JOptionPane.showMessageDialog(null, "Please add a valid GS information : OK or NO");
 				} else if (driver.getImageUrl().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid driver image");
-				} 
-				else {
-					try {
-						// establishing MySQL connection
-						connection = MySQLConnection.establishMySqlConnection();
-						
-						// creating prepared statement to execute parameterized query
-						preparedStatement = connection.prepareStatement(MySQLQuery.sqlQueryForDriverRegistration);
-						
-						// setting vales using PreparedStatement's setter methods 
-						// preparedStatement.setString(1, driver.getPaymentId());
-						preparedStatement.setString(1, driver.getName());
-						preparedStatement.setString(2, driver.getNic());
-						preparedStatement.setString(3, driver.getPhoneNumber());
-						preparedStatement.setString(4, driver.getWheelNumber());
-						preparedStatement.setString(5, driver.getAddress());
-						preparedStatement.setString(6, driver.getParkNumber());
-						preparedStatement.setString(7, driver.getPark());
-						preparedStatement.setBytes(8, driver.readImageFile(driver.getImageUrl()));
-						preparedStatement.setString(9, driver.getImageUrl());
-						preparedStatement.setString(10, driver.getGsDecision());
+				} else {
 
-						// executeUpdate() returns either (1) the row count for SQL Data Manipulation Language (DML) statements or (2) 0 for SQL statements that return nothing
-						if (preparedStatement.executeUpdate() > 0) {
-							JOptionPane.showMessageDialog(null, "Auto Driver Registration Successful!");
-							
-							// create instance of AdminHandeledJFrame
-							AutoDriverRegistrationJFrame autoDriverRegistrationJFrame = new AutoDriverRegistrationJFrame();
-							
-							// make it visible 
-							autoDriverRegistrationJFrame.setVisible(true);
-							
-							// center this JFrame
-							autoDriverRegistrationJFrame.setLocationRelativeTo(null);
-														
-							// get now registered driver id from driver table 
-							int driverId = mySQLQueryMethod.getDriverIdByNic(driver.getNic());
-														
-							// check if we have successfully get the driver id from driver table
-							if(driverId != -1) {
-							// insert a new row for newly registered driver 
-							mySQLQueryMethod.insertPaymentRow(driverId, driver.getName(),driver.getNic(), driver.getPark());
-							}
-							else {
-								System.out.println("Can not able to retrieve driver id");
-							}
-							// dispose the current JFrame
-							dispose();
+					System.out.println(driver);
+
+					if (mySQLQueryMethod.registerDriver(driver) > 0) {
+						JOptionPane.showMessageDialog(null, "Auto Driver Registration Successful!");
+
+						// create instance of AdminHandeledJFrame
+						AutoDriverRegistrationJFrame autoDriverRegistrationJFrame = new AutoDriverRegistrationJFrame();
+
+						// make it visible
+						autoDriverRegistrationJFrame.setVisible(true);
+
+						// center this JFrame
+						autoDriverRegistrationJFrame.setLocationRelativeTo(null);
+
+						// get now registered driver id from driver table
+						int driverId = mySQLQueryMethod.getDriverIdByNic(driver.getNic());
+
+						// check if we have successfully get the driver id from driver table
+						if (driverId != -1) {
+							// insert a new row for newly registered driver
+							mySQLQueryMethod.insertPaymentRow(driverId, driver.getName(), driver.getNic(),
+									driver.getPark());
+						} else {
+							System.out.println("Can not able to retrieve driver id");
 						}
-					} catch (SQLException e1) {
-						JOptionPane.showMessageDialog(null, e1);
-					} finally {
-						try {
-							preparedStatement.close();
-						} catch (SQLException e1) {
-							e1.printStackTrace();
-						}
-						try {
-							connection.close();
-						} catch (SQLException e1) {
-							e1.printStackTrace();
-						}
+						// dispose the current JFrame
+						dispose();
+					} else {
+						JOptionPane.showMessageDialog(null, "Auto Driver Registration Failed!");
 					}
 				}
 			}
@@ -303,13 +254,13 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// create instance of DashboardJFrame
 				DashboardJFrame dashboardJFrame = new DashboardJFrame();
-				
-				// make it visible 
+
+				// make it visible
 				dashboardJFrame.setVisible(true);
-				
-				// center this JFrame 
+
+				// center this JFrame
 				dashboardJFrame.setLocationRelativeTo(null);
-				
+
 				// dispose current JFrame
 				dispose();
 			}
@@ -374,7 +325,7 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 		txtphonenumber.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
-				// allow only digits to be entered 
+				// allow only digits to be entered
 				char c = e.getKeyChar();
 				if (!((Character.isDigit(c)) || (c == KeyEvent.VK_BACK_SPACE) || (c == KeyEvent.VK_DELETE))) {
 					e.consume();
@@ -415,37 +366,5 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 		txtImageUrl.setBounds(329, 453, 253, 26);
 		contentPane.add(txtImageUrl);
 
-	}
-
-	public Connection getConnection() {
-		return connection;
-	}
-
-	public void setConnection(Connection connection) {
-		this.connection = connection;
-	}
-
-	public PreparedStatement getPreparedStatement() {
-		return preparedStatement;
-	}
-
-	public void setPreparedStatement(PreparedStatement preparedStatement) {
-		this.preparedStatement = preparedStatement;
-	}
-
-	public Driver getDriver() {
-		return driver;
-	}
-
-	public void setDriver(Driver driver) {
-		this.driver = driver;
-	}
-
-	public MySQLValidatable getDriverValidator() {
-		return driverValidator;
-	}
-
-	public void setDriverValidator(DriverValidator driverValidator) {
-		this.driverValidator = driverValidator;
 	}
 }

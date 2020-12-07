@@ -7,6 +7,9 @@ import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
+import com.uc.tims.entity.Driver;
+import com.uc.tims.entity.Employee;
+
 // make method dont void
 public class MySQLQueryMethod {
 	private PreparedStatement preparedStatement;
@@ -123,4 +126,83 @@ public class MySQLQueryMethod {
 		}
 		return true;
 	}
+	
+	public ResultSet loginAdmin(Employee employee) {
+		// establishing MySQL connection
+		connection = MySQLConnection.establishMySqlConnection();
+		
+		try {
+			// creating prepared statement to execute parameterized query
+			preparedStatement = connection.prepareStatement(MySQLQuery.sqlQueryForAdminLogIn);
+			
+			// setting vales using PreparedStatement's setter methods 
+			preparedStatement.setString(1, employee.getUserName());
+			preparedStatement.setString(2, employee.getPassword());
+			
+			// execute the selected query and return an instance of ResultSet
+			resultSet = preparedStatement.executeQuery();
+			
+			return resultSet;	
+			
+		} catch (SQLException e1) {
+			JOptionPane.showMessageDialog(null, e1);
+		} finally {
+			try {
+				preparedStatement.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			try {
+				connection.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}
+		// login failed
+		return resultSet;
+	}
+	
+	public int registerDriver(Driver driver) {
+		
+		// establishing MySQL connection
+		connection = MySQLConnection.establishMySqlConnection();
+		
+		try {
+			// creating prepared statement to execute parameterized query
+			preparedStatement = connection.prepareStatement(MySQLQuery.sqlQueryForDriverRegistration);
+			
+			// setting vales using PreparedStatement's setter methods 
+			preparedStatement.setString(1, driver.getName());
+			preparedStatement.setString(2, driver.getNic());
+			preparedStatement.setString(3, driver.getPhoneNumber());
+			preparedStatement.setString(4, driver.getWheelNumber());
+			preparedStatement.setString(5, driver.getAddress());
+			preparedStatement.setString(6, driver.getParkNumber());
+			preparedStatement.setString(7, driver.getPark());
+			preparedStatement.setBytes(8, driver.getImage());
+			preparedStatement.setString(9, driver.getImageUrl());
+			preparedStatement.setString(10, driver.getGsDecision());
+			
+			// returns > 0 if successfully registered
+			return preparedStatement.executeUpdate();
+		}
+		catch (SQLException e1) {
+			JOptionPane.showMessageDialog(null, e1);
+		}
+		 finally {
+				try {
+					preparedStatement.close();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				try {
+					connection.close();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		// registration failed
+		return -1;
+	}
+	
 }

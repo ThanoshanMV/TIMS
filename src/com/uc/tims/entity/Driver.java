@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class Driver extends Person {
 	private int paymentId;
@@ -100,5 +101,15 @@ public class Driver extends Person {
 	}
 	public void setAvailableParks(String[] availableParks) {
 		this.availableParks = availableParks;
-	} 
+	}
+
+	@Override
+	public String toString() {
+		return "Driver [paymentId=" + paymentId + ", wheelNumber=" + wheelNumber + ", address=" + address + ", park="
+				+ park + ", parkNumber=" + parkNumber + ", phoneNumber=" + phoneNumber + ", gsDecision=" + gsDecision
+				+ ", imageUrl=" + imageUrl + ", availableParks="
+				+ Arrays.toString(availableParks) + "]";
+	}
+	
+	
 }
