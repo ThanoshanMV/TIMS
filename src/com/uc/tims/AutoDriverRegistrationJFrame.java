@@ -225,7 +225,7 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 						autoDriverRegistrationJFrame.setLocationRelativeTo(null);
 
 						// get now registered driver id from driver table
-						int driverId = mySQLQueryMethod.getDriverIdByNic(driver.getNic());
+						int driverId = mySQLQueryMethod.findDriverByNic(driver.getNic());
 
 						// check if we have successfully get the driver id from driver table
 						if (driverId != -1) {

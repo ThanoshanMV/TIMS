@@ -26,6 +26,7 @@ import javax.swing.table.TableColumn;
 
 import com.uc.tims.mysql.MySQLConnection;
 import com.uc.tims.mysql.MySQLQuery;
+import com.uc.tims.mysql.MySQLQueryMethod;
 import com.uc.tims.utilities.Printer;
 
 import net.proteanit.sql.DbUtils;
@@ -50,10 +51,9 @@ public class PaymentHistoryJFrame extends JFrame {
 	private JTextField txtsearch;
 	private JTable table;
 	
-	private ResultSet resultSet = null;
-	private PreparedStatement preparedStatement = null;
-	private Connection connection = null;
+	private ResultSet resultSet;
 	private Printer printer;
+	private MySQLQueryMethod mySQLQueryMethod;
 
 	/**
 	 * Launch the application.
@@ -78,6 +78,9 @@ public class PaymentHistoryJFrame extends JFrame {
 	public PaymentHistoryJFrame() {
 
 		printer = new Printer();
+		
+		// create MySQLQueryMethod instance
+		mySQLQueryMethod = new MySQLQueryMethod();
 		
 		setTitle("Payment history");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
@@ -109,35 +112,15 @@ public class PaymentHistoryJFrame extends JFrame {
 				try {
 					String selection = (String) comboBox.getSelectedItem();
 					
-					// can not add to MySQLQuery class as if I put there "WHERE ? = ?" error occurs
-					String query = "SELECT `park`,`name`,`nic`,`year2013`,`year2014`,`year2015`,`year2016`,`year2017`,`year2018`,`year2019`,`year2020`,`year2021`,`year2022`,`totalpayment` FROM `payment` WHERE `" + selection + "` = ?";
-					System.out.println(query);
+					resultSet = mySQLQueryMethod.findPaymentHistory(selection, txtsearch.getText());
 					
-					connection = MySQLConnection.establishMySqlConnection();
-					
-					preparedStatement = connection.prepareStatement(query);
-					preparedStatement.setString(1, txtsearch.getText());
-					resultSet = preparedStatement.executeQuery();
-
 					table.setModel(DbUtils.resultSetToTableModel(resultSet));
 
 					setJTableColumnsWidth(table, 1024, 5, 20, 10, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 10);
 
-				} catch (SQLException e1) {
-					e1.printStackTrace();
 				} finally {
 					try {
-						preparedStatement.close();
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-					}
-					try {
 						resultSet.close();
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-					}
-					try {
-						connection.close();
 					} catch (SQLException e1) {
 						e1.printStackTrace();
 					}
@@ -210,30 +193,6 @@ public class PaymentHistoryJFrame extends JFrame {
 			TableColumn column = table.getColumnModel().getColumn(i);
 			column.setPreferredWidth((int) (tablePreferredWidth * (percentages[i] / total)));
 		}
-	}
-
-	public ResultSet getResultSet() {
-		return resultSet;
-	}
-
-	public void setResultSet(ResultSet resultSet) {
-		this.resultSet = resultSet;
-	}
-
-	public Connection getConnection() {
-		return connection;
-	}
-
-	public void setConnection(Connection connection) {
-		this.connection = connection;
-	}
-
-	public Printer getPrinter() {
-		return printer;
-	}
-
-	public void setPrinter(Printer printer) {
-		this.printer = printer;
 	}
 	
 	

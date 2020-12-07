@@ -8,6 +8,7 @@ import javax.swing.border.EmptyBorder;
 
 import com.uc.tims.entity.Payment;
 import com.uc.tims.mysql.MySQLConnection;
+import com.uc.tims.mysql.MySQLQueryMethod;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -45,8 +46,9 @@ public class PaymentAddJFrame extends JFrame {
 	private JTextField txt22;
 	
 	private Payment payment;
-	private PreparedStatement preparedStatement = null;
-	private Connection connection = null;
+	private PreparedStatement preparedStatement;
+	private Connection connection;
+	private MySQLQueryMethod mySQLQueryMethod;
 	
 
 	/**
@@ -72,6 +74,9 @@ public class PaymentAddJFrame extends JFrame {
 	public PaymentAddJFrame() {
 
 		payment = new Payment();
+		
+		// create MySQLQueryMethod instance
+		mySQLQueryMethod = new MySQLQueryMethod();
 		
 		setTitle("Payment history");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
@@ -452,29 +457,23 @@ public class PaymentAddJFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				try {
 					
-					connection = MySQLConnection.establishMySqlConnection();
+					payment.setYear2013(payment.convertToDouble(txt13.getText()));
+					payment.setYear2014(payment.convertToDouble(txt14.getText()));
+					payment.setYear2015(payment.convertToDouble(txt15.getText()));
+					payment.setYear2016(payment.convertToDouble(txt16.getText()));
+					payment.setYear2017(payment.convertToDouble(txt17.getText()));
+					payment.setYear2018(payment.convertToDouble(txt18.getText()));
+					payment.setYear2019(payment.convertToDouble(txt19.getText()));
+					payment.setYear2020(payment.convertToDouble(txt20.getText()));
+					payment.setYear2021(payment.convertToDouble(txt21.getText()));
+					payment.setYear2022(payment.convertToDouble(txt22.getText()));
+					payment.setTotalPayment(payment.convertToDouble(txttotal.getText()));
+					payment.setName(txtname.getText());
 					
-					String sqlQueryForUpdatePaymentDetails = "UPDATE `payment` SET `year2013`= ?,`year2014`= ? ,`year2015`= ? ,`year2016`= ? ,`year2017`=  ? ,`year2018`= ? ,`year2019`= ? ,`year2020`= ? ,`year2021`= ? ,`year2022` = ?, `totalpayment` = ? WHERE `name`= ?";
-					preparedStatement = connection.prepareStatement(sqlQueryForUpdatePaymentDetails);
+					
 
-					preparedStatement.setDouble(1, payment.convertToDouble(txt13.getText()));
-					preparedStatement.setDouble(2, payment.convertToDouble(txt14.getText()));
-					preparedStatement.setDouble(3, payment.convertToDouble(txt15.getText()));
-					preparedStatement.setDouble(4, payment.convertToDouble(txt16.getText()));
-					preparedStatement.setDouble(5, payment.convertToDouble(txt17.getText()));
-					preparedStatement.setDouble(6, payment.convertToDouble(txt18.getText()));
-					preparedStatement.setDouble(7, payment.convertToDouble(txt19.getText()));
-					preparedStatement.setDouble(8, payment.convertToDouble(txt20.getText()));
-					preparedStatement.setDouble(9, payment.convertToDouble(txt21.getText()));
-					preparedStatement.setDouble(10, payment.convertToDouble(txt22.getText()));
-					preparedStatement.setDouble(11, payment.convertToDouble(txttotal.getText()));
-					preparedStatement.setString(12, txtname.getText());
-
-					System.out.println(sqlQueryForUpdatePaymentDetails);
-
-					if (preparedStatement.executeUpdate() > 0) {
+					if (mySQLQueryMethod.savePayment(payment) > 0) {
 						JOptionPane.showMessageDialog(null, "Successfully Saved!");
 						DashboardJFrame dashboardJFrame = new DashboardJFrame();
 						dashboardJFrame.setVisible(true);
@@ -483,20 +482,7 @@ public class PaymentAddJFrame extends JFrame {
 					} else {
 						JOptionPane.showMessageDialog(null, "Updation failed. Check entered details or Try again.");
 					}
-				} catch (SQLException e1) {
-					JOptionPane.showMessageDialog(null, "Error while establishing connection.");
-				} finally {
-					try {
-						preparedStatement.close();
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-					}
-					try {
-						connection.close();
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-					}
-				}
+
 			}
 		});
 		btnSave.setFont(new Font("Dialog", Font.BOLD, 15));

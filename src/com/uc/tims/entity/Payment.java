@@ -1,6 +1,7 @@
 package com.uc.tims.entity;
 
 public class Payment extends Person {
+	private String park;
 	private double totalPayment;
 	private double year2013;
 	private double year2014;
@@ -107,6 +108,16 @@ public class Payment extends Person {
 	}
 	public void setYear2022(double year2022) {
 		this.year2022 = year2022;
+	}
+
+	
+	
+	public String getPark() {
+		return park;
+	}
+
+	public void setPark(String park) {
+		this.park = park;
 	}
 
 	@Override

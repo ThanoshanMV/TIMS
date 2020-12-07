@@ -7,16 +7,13 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.uc.tims.entity.Driver;
-import com.uc.tims.mysql.MySQLConnection;
-import com.uc.tims.mysql.MySQLQuery;
+import com.uc.tims.mysql.MySQLQueryMethod;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
@@ -36,11 +33,11 @@ public class ChooseEditDriverJFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtnicnumber;
-	
-	private Driver driver; 
-	private PreparedStatement preparedStatement = null;
-	private ResultSet resultSet = null;
-	private Connection connection = null;
+
+	private Driver driver;
+	private ResultSet resultSet;
+
+	private MySQLQueryMethod mySQLQueryMethod;
 
 	/**
 	 * Launch the application.
@@ -66,8 +63,10 @@ public class ChooseEditDriverJFrame extends JFrame {
 
 		setTitle("Details of driver");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
-		
+
 		driver = new Driver();
+
+		mySQLQueryMethod = new MySQLQueryMethod();
 
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -78,7 +77,8 @@ public class ChooseEditDriverJFrame extends JFrame {
 		contentPane.setLayout(null);
 
 		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "DA", "DB", "DC", "DD", "DE", "DF", "DG", "DH"}));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L",
+				"M", "N", "P", "Q", "R", "S", "DA", "DB", "DC", "DD", "DE", "DF", "DG", "DH" }));
 		comboBox.setFont(new Font("Dialog", Font.BOLD, 15));
 		comboBox.setBounds(224, 112, 157, 33);
 		contentPane.add(comboBox);
@@ -120,13 +120,10 @@ public class ChooseEditDriverJFrame extends JFrame {
 				driver.setPark((String) comboBox.getSelectedItem());
 				driver.setNic(txtnicnumber.getText());
 				try {
-					connection = MySQLConnection.establishMySqlConnection();
-					
-					preparedStatement = connection.prepareStatement(MySQLQuery.sqlQueryForChooseDriverToEdit);
-					preparedStatement.setString(1, driver.getPark());
-					preparedStatement.setString(2, driver.getNic());
 
-					resultSet = preparedStatement.executeQuery();
+					resultSet = mySQLQueryMethod.findDriverByParkNic(driver);
+
+					System.out.println(resultSet);
 
 					if (resultSet.next()) {
 						JOptionPane.showMessageDialog(null, "Driver Connected");
@@ -153,17 +150,7 @@ public class ChooseEditDriverJFrame extends JFrame {
 					JOptionPane.showMessageDialog(null, "Error while establishing connection.");
 				} finally {
 					try {
-						preparedStatement.close();
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-					}
-					try {
 						resultSet.close();
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-					}
-					try {
-						connection.close();
 					} catch (SQLException e1) {
 						e1.printStackTrace();
 					}
@@ -197,7 +184,5 @@ public class ChooseEditDriverJFrame extends JFrame {
 	public void setDriver(Driver driver) {
 		this.driver = driver;
 	}
-
-
 
 }

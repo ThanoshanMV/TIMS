@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.uc.tims.mysql.MySQLConnection;
+import com.uc.tims.mysql.MySQLQueryMethod;
 import com.uc.tims.utilities.Printer;
 
 import net.proteanit.sql.DbUtils;
@@ -29,6 +30,8 @@ import java.sql.SQLException;
 
 import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
+import javax.swing.table.TableColumn;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Toolkit;
@@ -45,11 +48,10 @@ public class PrintJFrame extends JFrame {
 	private JTextField txtprint;
 	private JTable table;
 	
-
-	private PreparedStatement preparedStatement = null;
-	private ResultSet resultSet = null;
-	private Connection connection = null;
+	private ResultSet resultSet;
 	private Printer printer;
+	private MySQLQueryMethod mySQLQueryMethod;
+
 
 	/**
 	 * Launch the application.
@@ -78,6 +80,9 @@ public class PrintJFrame extends JFrame {
 		
 		// create new Printer object
 		printer = new Printer();
+		
+		// create MySQLQueryMethod instance
+		mySQLQueryMethod = new MySQLQueryMethod();
 
 		setTitle("Print details");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
@@ -126,36 +131,17 @@ public class PrintJFrame extends JFrame {
 				txtprint.setText(txtprint.getText().toUpperCase());
 				try {
 					
-					connection = MySQLConnection.establishMySqlConnection();
-					
 					String selection = (String) comboBoxPrint.getSelectedItem();
-					// can not add to MySQLQuery class as if I put there "WHERE ? = ?" error occurs
-					String query = "SELECT `park`,`parkno`,`wheelno`,`name`,`address`,`nic`,`phoneno`,`gs` FROM `driver` WHERE `"
-							+ selection + "` = ?";
-					System.out.println(query);
-					preparedStatement = connection.prepareStatement(query);
-					preparedStatement.setString(1, txtprint.getText());
-					resultSet = preparedStatement.executeQuery();
+					
+					resultSet = mySQLQueryMethod.findDriverDetails(selection, txtprint.getText());
 
 					table.setModel(DbUtils.resultSetToTableModel(resultSet));
 
-					SearchJFrame.setJTableColumnsWidth(table, 1024, 5, 5, 10, 20, 30, 10, 15, 5);
+					setJTableColumnsWidth(table, 1024, 5, 5, 10, 20, 30, 10, 15, 5);
 
-				} catch (SQLException e1) {
-					e1.printStackTrace();
 				} finally {
 					try {
-						preparedStatement.close();
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-					}
-					try {
 						resultSet.close();
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-					}
-					try {
-						connection.close();
 					} catch (SQLException e1) {
 						e1.printStackTrace();
 					}
@@ -194,6 +180,18 @@ public class PrintJFrame extends JFrame {
 		contentPane.add(btnBack);
 
 	}
+	
+	private void setJTableColumnsWidth(JTable table, int tablePreferredWidth, double... percentages) {
+		double total = 0;
+		for (int i = 0; i < table.getColumnModel().getColumnCount(); i++) {
+			total += percentages[i];
+		}
+
+		for (int i = 0; i < table.getColumnModel().getColumnCount(); i++) {
+			TableColumn column = table.getColumnModel().getColumn(i);
+			column.setPreferredWidth((int) (tablePreferredWidth * (percentages[i] / total)));
+		}
+	}
 
 	public ResultSet getResultSet() {
 		return resultSet;
@@ -201,14 +199,6 @@ public class PrintJFrame extends JFrame {
 
 	public void setResultSet(ResultSet resultSet) {
 		this.resultSet = resultSet;
-	}
-
-	public Connection getConnection() {
-		return connection;
-	}
-
-	public void setConnection(Connection connection) {
-		this.connection = connection;
 	}
 
 	public Printer getPrinter() {

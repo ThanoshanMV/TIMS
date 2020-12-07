@@ -7,7 +7,9 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.uc.tims.entity.Driver;
+import com.uc.tims.entity.Payment;
 import com.uc.tims.mysql.MySQLConnection;
+import com.uc.tims.mysql.MySQLQueryMethod;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -49,8 +51,9 @@ public class EditAutoDriverFormJFrame extends JFrame {
 
 	
 	private Driver driver;
-	private Connection connection; 
-	private PreparedStatement preparedStatement;
+	private Payment payment;
+	private MySQLQueryMethod mySQLQueryMethod;
+
 
 	/**
 	 * Launch the application.
@@ -79,6 +82,11 @@ public class EditAutoDriverFormJFrame extends JFrame {
 		
 		// creating driver object
 		driver = new Driver();
+		
+		payment = new Payment();
+		
+		// create MySQLQueryMethod instance
+		mySQLQueryMethod = new MySQLQueryMethod();
 
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -258,6 +266,11 @@ public class EditAutoDriverFormJFrame extends JFrame {
 				driver.setPhoneNumber(txtphonenumber.getText());
 				driver.setGsDecision(comboBox.getSelectedItem().toString());
 				driver.setImageUrl(txtImageUrl.getText());
+				driver.setImage(driver.readImageFile(driver.getImageUrl()));
+				
+				payment.setName(driver.getName());
+				payment.setNic(driver.getNic());
+				payment.setPark(driver.getPark());
 				
 				if (driver.getParkNumber().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid park no!");
@@ -279,29 +292,10 @@ public class EditAutoDriverFormJFrame extends JFrame {
 					JOptionPane.showMessageDialog(null, "Please add a valid driver image");
 				} else {
 
-					try {
-						System.out.println(driver.getPark());
-						System.out.println(driver.getWheelNumber());
-						System.out.println(driver.getImageUrl());
-						connection = MySQLConnection.establishMySqlConnection();
-						String sqlQueryForUpdateDriverDetails = "UPDATE `driver` SET `park`= ?,`parkno`= ? ,`wheelno`= ? ,`name`= ? ,`address`=  ? ,`nic`= ? ,`phoneno`= ? ,`gs`= ? ,`images`= ? ,`imageurl` = ? WHERE `parkno`= ?";
-						preparedStatement = connection.prepareStatement(sqlQueryForUpdateDriverDetails);
-
-						preparedStatement.setString(1, driver.getPark());
-						preparedStatement.setString(2, driver.getParkNumber());
-						preparedStatement.setString(3, driver.getWheelNumber());
-						preparedStatement.setString(4, driver.getName());
-						preparedStatement.setString(5, driver.getAddress());
-						preparedStatement.setString(6, driver.getNic());
-						preparedStatement.setString(7, driver.getPhoneNumber());
-						preparedStatement.setString(8, driver.getGsDecision());
-						preparedStatement.setBytes(9, driver.readImageFile(driver.getImageUrl()));
-						preparedStatement.setString(10, driver.getImageUrl());
-						preparedStatement.setString(11, StaticMembers.parkNo);
-
-						System.out.println(sqlQueryForUpdateDriverDetails);
-
-						if (preparedStatement.executeUpdate() > 0) {
+					int updateDriver = mySQLQueryMethod.updateDriver(driver);
+					int updatePayment = mySQLQueryMethod.updatePayment(payment, StaticMembers.nic);
+					
+						if (updateDriver > 0 && updatePayment > 0) {
 							JOptionPane.showMessageDialog(null, "Successfully Saved!");
 							DashboardJFrame dashboardJFrame = new DashboardJFrame();
 							dashboardJFrame.setVisible(true);
@@ -310,20 +304,7 @@ public class EditAutoDriverFormJFrame extends JFrame {
 						} else {
 							JOptionPane.showMessageDialog(null, "Updation failed. Check entered details or Try again.");
 						}
-					} catch (SQLException e1) {
-						JOptionPane.showMessageDialog(null, "Error while establishing connection.");
-					} finally {
-						try {
-							preparedStatement.close();
-						} catch (SQLException e1) {
-							e1.printStackTrace();
-						}
-						try {
-							connection.close();
-						} catch (SQLException e1) {
-							e1.printStackTrace();
-						}
-					}
+
 				}
 			}
 		});
@@ -375,22 +356,6 @@ public class EditAutoDriverFormJFrame extends JFrame {
 
 	public void setDriver(Driver driver) {
 		this.driver = driver;
-	}
-
-	public Connection getConnection() {
-		return connection;
-	}
-
-	public void setConnection(Connection connection) {
-		this.connection = connection;
-	}
-
-	public PreparedStatement getPreparedStatement() {
-		return preparedStatement;
-	}
-
-	public void setPreparedStatement(PreparedStatement preparedStatement) {
-		this.preparedStatement = preparedStatement;
 	}
 	
 }

@@ -8,6 +8,7 @@ import javax.swing.border.EmptyBorder;
 
 import com.uc.tims.entity.Driver;
 import com.uc.tims.mysql.MySQLConnection;
+import com.uc.tims.mysql.MySQLQueryMethod;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -36,9 +37,10 @@ public class ChooseDriverPaymentJFrame extends JFrame {
 	private JTextField txtnic;
 	
 	private Driver driver;
-	private PreparedStatement preparedStatement = null;
 	private ResultSet resultSet = null;
-	private Connection connection = null;
+	
+	private MySQLQueryMethod mySQLQueryMethod;
+
 
 	/**
 	 * Launch the application.
@@ -63,6 +65,9 @@ public class ChooseDriverPaymentJFrame extends JFrame {
 	public ChooseDriverPaymentJFrame() {
 
 		driver = new Driver();
+		
+		mySQLQueryMethod = new MySQLQueryMethod();
+
 		
 		setTitle("Details of driver");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
@@ -131,14 +136,9 @@ public class ChooseDriverPaymentJFrame extends JFrame {
 				driver.setNic(txtnic.getText());
 
 				try {
-					String query = "SELECT * FROM `payment` WHERE `park`= ? AND `nic`= ?";
-					
-					connection = MySQLConnection.establishMySqlConnection();
-					
-					preparedStatement = connection.prepareStatement(query);
-					preparedStatement.setString(1, driver.getPark());
-					preparedStatement.setString(2, driver.getNic());
-					resultSet = preparedStatement.executeQuery();
+
+					resultSet = mySQLQueryMethod.findPaymentByParkNic(driver);
+
 
 					if (resultSet.next()) {
 						JOptionPane.showMessageDialog(null, "Driver Connected");
@@ -171,17 +171,7 @@ public class ChooseDriverPaymentJFrame extends JFrame {
 					JOptionPane.showMessageDialog(null, "Error while establishing connection.");
 				} finally {
 					try {
-						preparedStatement.close();
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-					}
-					try {
 						resultSet.close();
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-					}
-					try {
-						connection.close();
 					} catch (SQLException e1) {
 						e1.printStackTrace();
 					}

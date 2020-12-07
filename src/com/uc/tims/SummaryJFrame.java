@@ -99,7 +99,7 @@ public class SummaryJFrame extends JFrame {
 
 			table.setModel(DbUtils.resultSetToTableModel(resultSet));
 
-			SearchJFrame.setJTableColumnsWidth(table, 1024, 5, 5, 10, 20, 30, 10, 15, 5);
+			setJTableColumnsWidth(table, 1024, 5, 5, 10, 20, 30, 10, 15, 5);
 
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -152,7 +152,7 @@ public class SummaryJFrame extends JFrame {
 		contentPane.add(lblSummaryDetails);
 	}
 
-	public static void setJTableColumnsWidth(JTable table, int tablePreferredWidth, double... percentages) {
+	private void setJTableColumnsWidth(JTable table, int tablePreferredWidth, double... percentages) {
 		double total = 0;
 		for (int i = 0; i < table.getColumnModel().getColumnCount(); i++) {
 			total += percentages[i];

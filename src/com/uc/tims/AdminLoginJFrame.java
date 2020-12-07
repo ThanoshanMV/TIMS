@@ -62,6 +62,9 @@ public class AdminLoginJFrame extends JFrame {
 
 		// creating Employee object
 		employee = new Employee();
+		
+		// create MySQLQueryMethod instance
+		mySQLQueryMethod = new MySQLQueryMethod();
 
 		setTitle("Admin login page");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
