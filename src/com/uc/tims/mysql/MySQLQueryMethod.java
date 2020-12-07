@@ -205,4 +205,42 @@ public class MySQLQueryMethod {
 		return -1;
 	}
 	
+	public ResultSet getPaymentForDriver(Driver driver) {
+		// establishing MySQL connection
+		connection = MySQLConnection.establishMySqlConnection();
+
+		try {
+			String query = "SELECT * FROM `payment` WHERE `park`= ? AND `nic`= ?";	
+			
+			preparedStatement = connection.prepareStatement(query);
+			
+			preparedStatement.setString(1, driver.getPark());
+			preparedStatement.setString(2, driver.getNic());
+			
+			resultSet = preparedStatement.executeQuery();
+			
+			return resultSet;
+		}
+		catch (SQLException e1) {
+			JOptionPane.showMessageDialog(null, "Error while establishing connection!!");
+		} finally {
+			try {
+				preparedStatement.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			try {
+				resultSet.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			try {
+				connection.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}
+		return resultSet;
+	}
+	
 }

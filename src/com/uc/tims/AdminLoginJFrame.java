@@ -7,8 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.uc.tims.entity.Employee;
-import com.uc.tims.mysql.MySQLConnection;
-import com.uc.tims.mysql.MySQLQuery;
 import com.uc.tims.mysql.MySQLQueryMethod;
 
 import javax.swing.JLabel;
@@ -35,10 +33,8 @@ public class AdminLoginJFrame extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtuname;
 	private JPasswordField txtpassword;
-	
+
 	private Employee employee;
-	private Connection connection; 
-	private PreparedStatement preparedStatement;
 	private ResultSet resultSet;
 	private MySQLQueryMethod mySQLQueryMethod;
 
@@ -63,10 +59,10 @@ public class AdminLoginJFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public AdminLoginJFrame() {
-		
+
 		// creating Employee object
 		employee = new Employee();
-		
+
 		setTitle("Admin login page");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
 
@@ -119,46 +115,46 @@ public class AdminLoginJFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				employee.setUserName(txtuname.getText());
 				employee.setPassword(String.valueOf(txtpassword.getPassword()));
-					
-					// execute the selected query and return an instance of ResultSet
-					resultSet = mySQLQueryMethod.loginAdmin(employee);
-					
-					// resultSet.next() returns true if the new current row is valid otherwise false if there are no more rows
-					try {
-						if (resultSet.next()) {
-							// valid row from query is available!
-							JOptionPane.showMessageDialog(null, "Login successful");
-							
-							// getting username column value for this specified row 
-							StaticMembers.name = resultSet.getString("username");
-							
-							// setting adminLoggenin as true becaouse of admin's login was success
-							StaticMembers.adminLoggedin = true;
-							
-							// create instance of AdminHandeledJFrame
-							AdminHandeledJFrame adminHandeledJFrame = new AdminHandeledJFrame();
-							
-							// make it visible 
-							adminHandeledJFrame.setVisible(true);
-							
-							// center this JFrame
-							adminHandeledJFrame.setLocationRelativeTo(null);
-							
-							// dispose the current JFrame
-							dispose();
-						} 
-						else {
-							// no valid row for that query is available!
-							JOptionPane.showMessageDialog(null, "Check Username or Password.");
-						}
-					} catch (HeadlessException e1) {
-						e1.printStackTrace();
-					} catch (SQLException e1) {
-						e1.printStackTrace();
+
+				// execute the selected query and return an instance of ResultSet
+				resultSet = mySQLQueryMethod.loginAdmin(employee);
+
+				// resultSet.next() returns true if the new current row is valid otherwise false
+				// if there are no more rows
+				try {
+					if (resultSet.next()) {
+						// valid row from query is available!
+						JOptionPane.showMessageDialog(null, "Login successful");
+
+						// getting username column value for this specified row
+						StaticMembers.name = resultSet.getString("username");
+
+						// setting adminLoggenin as true because of admin's login was success
+						StaticMembers.adminLoggedin = true;
+
+						// create instance of AdminHandeledJFrame
+						AdminHandeledJFrame adminHandeledJFrame = new AdminHandeledJFrame();
+
+						// make it visible
+						adminHandeledJFrame.setVisible(true);
+
+						// center this JFrame
+						adminHandeledJFrame.setLocationRelativeTo(null);
+
+						// dispose the current JFrame
+						dispose();
+					} else {
+						// no valid row for that query is available!
+						JOptionPane.showMessageDialog(null, "Check Username or Password.");
 					}
+				} catch (HeadlessException e1) {
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
-		
+
 		btnLogin.setBounds(291, 336, 121, 37);
 		contentPane.add(btnLogin);
 
@@ -172,13 +168,13 @@ public class AdminLoginJFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// create instance of StartJFrame
 				StartJFrame startJFrameObject = new StartJFrame();
-				
-				// make it visible 
+
+				// make it visible
 				startJFrameObject.setVisible(true);
-				
-				// center this JFrame 
+
+				// center this JFrame
 				startJFrameObject.setLocationRelativeTo(null);
-				
+
 				// dispose current (AdminLoginJFrame)
 				dispose();
 			}
@@ -186,30 +182,5 @@ public class AdminLoginJFrame extends JFrame {
 		btnBack.setBounds(47, 336, 113, 37);
 		contentPane.add(btnBack);
 	}
-
-	public Connection getConnection() {
-		return connection;
-	}
-
-	public void setConnection(Connection connection) {
-		this.connection = connection;
-	}
-
-	public PreparedStatement getPreparedStatement() {
-		return preparedStatement;
-	}
-
-	public void setPreparedStatement(PreparedStatement preparedStatement) {
-		this.preparedStatement = preparedStatement;
-	}
-
-	public ResultSet getResultSet() {
-		return resultSet;
-	}
-
-	public void setResultSet(ResultSet resultSet) {
-		this.resultSet = resultSet;
-	}
-	
 
 }

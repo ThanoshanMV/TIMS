@@ -108,7 +108,7 @@ public class Driver extends Person {
 		return "Driver [paymentId=" + paymentId + ", wheelNumber=" + wheelNumber + ", address=" + address + ", park="
 				+ park + ", parkNumber=" + parkNumber + ", phoneNumber=" + phoneNumber + ", gsDecision=" + gsDecision
 				+ ", imageUrl=" + imageUrl + ", availableParks="
-				+ Arrays.toString(availableParks) + "]";
+				+ Arrays.toString(availableParks) + ", NIC" + getNic() + "]";
 	}
 	
 	
