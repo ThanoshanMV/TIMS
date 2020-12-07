@@ -122,7 +122,7 @@ public class ChooseEditDriverJFrame extends JFrame {
 				try {
 					connection = MySQLConnection.establishMySqlConnection();
 					
-					preparedStatement = connection.prepareStatement(MySQLQuery.getSqlQueryForChooseDriverToEdit());
+					preparedStatement = connection.prepareStatement(MySQLQuery.sqlQueryForChooseDriverToEdit);
 					preparedStatement.setString(1, driver.getPark());
 					preparedStatement.setString(2, driver.getNic());
 

@@ -156,7 +156,7 @@ public class SearchJFrame extends JFrame {
 					connection = MySQLConnection.establishMySqlConnection();
 					
 					// creating prepared statement to execute parameterized query
-					preparedStatement = connection.prepareStatement(MySQLQuery.getSqlQueryForSelectDriverDetailsForSearchOperartion());
+					preparedStatement = connection.prepareStatement(MySQLQuery.sqlQueryForSelectDriverDetailsForSearchOperartion);
 					
 					// setting parkno value using PreparedStatement's setter methods 
 					preparedStatement.setString(1, searchJFrame.getTableClick());
@@ -324,7 +324,7 @@ public class SearchJFrame extends JFrame {
 						// establishing MySQL connection
 						setConnection(MySQLConnection.establishMySqlConnection());
 						
-						preparedStatement = getConnection().prepareStatement(MySQLQuery.getSqlQueryForDeleteDriverByNic());
+						preparedStatement = getConnection().prepareStatement(MySQLQuery.sqlQueryForDeleteDriverByNic);
 						preparedStatement.setString(1, searchJFrame.getTableClick());
 						
 						System.out.println(searchJFrame.getTableClick());
@@ -345,7 +345,7 @@ public class SearchJFrame extends JFrame {
 								setConnection(MySQLConnection.establishMySqlConnection());
 								
 								// creating prepared statement to execute parameterized query
-								preparedStatement = getConnection().prepareStatement(MySQLQuery.getSqlQueryForSelectDriverDetailsBySearch());
+								preparedStatement = getConnection().prepareStatement(MySQLQuery.sqlQueryForSelectDriverDetailsBySearch);
 								
 								// setting vales using PreparedStatement's setter methods 
 								preparedStatement.setString(1, getSearchBy());

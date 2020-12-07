@@ -122,7 +122,7 @@ public class AdminLoginJFrame extends JFrame {
 					connection = MySQLConnection.establishMySqlConnection();
 					
 					// creating prepared statement to execute parameterized query
-					preparedStatement = connection.prepareStatement(MySQLQuery.getSqlQueryForAdminLogIn());
+					preparedStatement = connection.prepareStatement(MySQLQuery.sqlQueryForAdminLogIn);
 					
 					// setting vales using PreparedStatement's setter methods 
 					preparedStatement.setString(1, employee.getUserName());

@@ -131,7 +131,7 @@ public class UserLoginJFrame extends JFrame {
 				try {
 					connection = MySQLConnection.establishMySqlConnection();
 					
-					preparedStatement = connection.prepareStatement(MySQLQuery.getSqlQueryForUserLogIn());
+					preparedStatement = connection.prepareStatement(MySQLQuery.sqlQueryForUserLogIn);
 					preparedStatement.setString(1, employee.getUserName());
 					preparedStatement.setString(2, employee.getPassword());
 					System.out.println("User name " + employee.getUserName());

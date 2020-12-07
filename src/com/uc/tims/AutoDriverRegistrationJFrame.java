@@ -231,7 +231,7 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 						connection = MySQLConnection.establishMySqlConnection();
 						
 						// creating prepared statement to execute parameterized query
-						preparedStatement = connection.prepareStatement(MySQLQuery.getSqlQueryForDriverRegistration());
+						preparedStatement = connection.prepareStatement(MySQLQuery.sqlQueryForDriverRegistration);
 						
 						// setting vales using PreparedStatement's setter methods 
 						// preparedStatement.setString(1, driver.getPaymentId());

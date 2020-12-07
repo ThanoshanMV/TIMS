@@ -177,7 +177,7 @@ public class UserRegistrationJFrame extends JFrame {
 						connection = MySQLConnection.establishMySqlConnection();
 						
 						// creating prepared statement to execute parameterized query
-						preparedStatement = connection.prepareStatement(MySQLQuery.getSqlQueryForUserRegistration());
+						preparedStatement = connection.prepareStatement(MySQLQuery.sqlQueryForUserRegistration);
 
 						// setting vales using PreparedStatement's setter methods 
 						// registering for user, his (user) role id is 2 

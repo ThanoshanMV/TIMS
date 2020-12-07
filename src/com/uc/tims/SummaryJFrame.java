@@ -93,7 +93,7 @@ public class SummaryJFrame extends JFrame {
 			
 			connection = MySQLConnection.establishMySqlConnection();
 			
-			preparedStatement = connection.prepareStatement(MySQLQuery.getSqlQueryForGetSummaryByParkCount());
+			preparedStatement = connection.prepareStatement(MySQLQuery.sqlQueryForGetSummaryByParkCount);
 			
 			resultSet = preparedStatement.executeQuery();
 
