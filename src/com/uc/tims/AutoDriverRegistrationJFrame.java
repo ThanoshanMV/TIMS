@@ -60,6 +60,8 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 	private DriverValidator driverValidator;
 	private Connection connection; 
 	private PreparedStatement preparedStatement;
+	private MySQLQueryMethod mySQLQueryMethod;
+
 
 	/**
 	 * Launch the application.
@@ -260,12 +262,12 @@ public class AutoDriverRegistrationJFrame extends JFrame {
 							autoDriverRegistrationJFrame.setLocationRelativeTo(null);
 							
 							// get now registered driver id from driver table 
-							int driverId = MySQLQueryMethod.getDriverIdByNic(driver.getNic());
+							int driverId = mySQLQueryMethod.getDriverIdByNic(driver.getNic());
 							
 							// check if we have successfully get the driver id from driver table
 							if(driverId != -1) {
 							// insert a new row for newly registered driver 
-							MySQLQueryMethod.insertPaymentRow(driverId, driver.getName(),driver.getNic(), driver.getPark());
+							mySQLQueryMethod.insertPaymentRow(driverId, driver.getName(),driver.getNic(), driver.getPark());
 							}
 							else {
 								System.out.println("Can not able to retrieve driver id");

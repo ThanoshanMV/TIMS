@@ -61,6 +61,7 @@ public class SearchJFrame extends JFrame {
 	private PreparedStatement preparedStatement = null;
 	private Connection connection = null;
 	private String searchBy;
+	private MySQLQueryMethod mySQLQueryMethod;
 
 	/**
 	 * Launch the application.
@@ -329,7 +330,7 @@ public class SearchJFrame extends JFrame {
 						
 						System.out.println(searchJFrame.getTableClick());
 						
-						boolean payment = MySQLQueryMethod.deletePaymentByNic(searchJFrame.getTableClick());
+						boolean payment = mySQLQueryMethod.deletePaymentByNic(searchJFrame.getTableClick());
 						System.out.println(!payment);
 						int result = preparedStatement.executeUpdate();
 						System.out.println(result);
