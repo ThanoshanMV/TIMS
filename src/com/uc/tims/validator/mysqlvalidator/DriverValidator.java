@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 import com.uc.tims.mysql.MySQLConnection;
 
 public class DriverValidator implements MySQLValidatable {
-	
+
 	private PreparedStatement preparedStatement = null;
 	private ResultSet resultSet = null;
 	private Connection connection = null;
@@ -89,7 +89,7 @@ public class DriverValidator implements MySQLValidatable {
 			}
 		}
 		return checkWheelNo;
-	
+
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public class DriverValidator implements MySQLValidatable {
 			}
 		}
 		return checkName;
-	
+
 	}
 
 	@Override
@@ -208,7 +208,7 @@ public class DriverValidator implements MySQLValidatable {
 			}
 		}
 		return checkNic;
-	
+
 	}
 
 }

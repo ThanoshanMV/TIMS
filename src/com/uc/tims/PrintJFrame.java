@@ -6,7 +6,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import com.uc.tims.mysql.MySQLConnection;
 import com.uc.tims.mysql.MySQLQueryMethod;
 import com.uc.tims.utilities.Printer;
 
@@ -23,8 +22,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTable;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -41,17 +38,15 @@ import java.awt.Cursor;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
-
 public class PrintJFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtprint;
 	private JTable table;
-	
+
 	private ResultSet resultSet;
 	private Printer printer;
 	private MySQLQueryMethod mySQLQueryMethod;
-
 
 	/**
 	 * Launch the application.
@@ -77,10 +72,10 @@ public class PrintJFrame extends JFrame {
 	 */
 
 	public PrintJFrame() {
-		
+
 		// create new Printer object
 		printer = new Printer();
-		
+
 		// create MySQLQueryMethod instance
 		mySQLQueryMethod = new MySQLQueryMethod();
 
@@ -130,9 +125,9 @@ public class PrintJFrame extends JFrame {
 			public void keyReleased(KeyEvent e) {
 				txtprint.setText(txtprint.getText().toUpperCase());
 				try {
-					
+
 					String selection = (String) comboBoxPrint.getSelectedItem();
-					
+
 					resultSet = mySQLQueryMethod.findDriverDetails(selection, txtprint.getText());
 
 					table.setModel(DbUtils.resultSetToTableModel(resultSet));
@@ -180,7 +175,7 @@ public class PrintJFrame extends JFrame {
 		contentPane.add(btnBack);
 
 	}
-	
+
 	private void setJTableColumnsWidth(JTable table, int tablePreferredWidth, double... percentages) {
 		double total = 0;
 		for (int i = 0; i < table.getColumnModel().getColumnCount(); i++) {
@@ -208,7 +203,5 @@ public class PrintJFrame extends JFrame {
 	public void setPrinter(Printer printer) {
 		this.printer = printer;
 	}
-	
-	
 
 }

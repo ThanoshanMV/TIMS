@@ -7,15 +7,12 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JComboBox;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.Toolkit;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JTable;
@@ -24,8 +21,6 @@ import javax.swing.JButton;
 import javax.swing.border.LineBorder;
 import javax.swing.table.TableColumn;
 
-import com.uc.tims.mysql.MySQLConnection;
-import com.uc.tims.mysql.MySQLQuery;
 import com.uc.tims.mysql.MySQLQueryMethod;
 import com.uc.tims.utilities.Printer;
 
@@ -34,12 +29,8 @@ import net.proteanit.sql.DbUtils;
 import java.awt.Color;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.print.PrinterException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.MessageFormat;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -50,7 +41,7 @@ public class PaymentHistoryJFrame extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtsearch;
 	private JTable table;
-	
+
 	private ResultSet resultSet;
 	private Printer printer;
 	private MySQLQueryMethod mySQLQueryMethod;
@@ -78,10 +69,10 @@ public class PaymentHistoryJFrame extends JFrame {
 	public PaymentHistoryJFrame() {
 
 		printer = new Printer();
-		
+
 		// create MySQLQueryMethod instance
 		mySQLQueryMethod = new MySQLQueryMethod();
-		
+
 		setTitle("Payment history");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
 
@@ -111,9 +102,9 @@ public class PaymentHistoryJFrame extends JFrame {
 				txtsearch.setText(txtsearch.getText().toUpperCase());
 				try {
 					String selection = (String) comboBox.getSelectedItem();
-					
+
 					resultSet = mySQLQueryMethod.findPaymentHistory(selection, txtsearch.getText());
-					
+
 					table.setModel(DbUtils.resultSetToTableModel(resultSet));
 
 					setJTableColumnsWidth(table, 1024, 5, 20, 10, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 10);
@@ -149,13 +140,12 @@ public class PaymentHistoryJFrame extends JFrame {
 		});
 		scrollPane.setViewportView(table);
 		table.setRowHeight(40);
-		
+
 		/*
 		 * DefaultTableCellRenderer renderer = (DefaultTableCellRenderer)
 		 * table.getDefaultRenderer(Object.class);
 		 * renderer.setHorizontalAlignment(SwingConstants.CENTER);
 		 */
-
 
 		JButton btnBack = new JButton("Back\n");
 		btnBack.addActionListener(new ActionListener() {
@@ -194,6 +184,5 @@ public class PaymentHistoryJFrame extends JFrame {
 			column.setPreferredWidth((int) (tablePreferredWidth * (percentages[i] / total)));
 		}
 	}
-	
-	
+
 }

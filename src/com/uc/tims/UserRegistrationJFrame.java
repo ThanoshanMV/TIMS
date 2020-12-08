@@ -6,8 +6,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.uc.tims.entity.Employee;
-import com.uc.tims.mysql.MySQLConnection;
-import com.uc.tims.mysql.MySQLQuery;
+import com.uc.tims.mysql.MySQLQueryMethod;
 import com.uc.tims.validator.mysqlvalidator.EmployeeValidator;
 
 import javax.swing.JLabel;
@@ -18,10 +17,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.awt.Font;
 import java.awt.Toolkit;
 
@@ -37,11 +32,10 @@ public class UserRegistrationJFrame extends JFrame {
 	private JTextField txtnic;
 	private JTextField txtuc;
 	private JPasswordField txtpassword;
-	
-	private Employee employee; 
+
+	private Employee employee;
 	private EmployeeValidator employeeValidator;
-	private Connection connection; 
-	private PreparedStatement preparedStatement;
+	private MySQLQueryMethod mySQLQueryMethod;
 
 	/**
 	 * Launch the application.
@@ -64,12 +58,14 @@ public class UserRegistrationJFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public UserRegistrationJFrame() {
-		
-		// set new employee instance 
-		setEmployee(new Employee());
-		
+
+		// set new employee instance
+		employee = new Employee();
+
 		employeeValidator = new EmployeeValidator();
-		
+
+		mySQLQueryMethod = new MySQLQueryMethod();
+
 		setTitle("User registration form");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
 
@@ -162,60 +158,35 @@ public class UserRegistrationJFrame extends JFrame {
 					JOptionPane.showMessageDialog(null, "Please add a valid password!");
 				} else if (employee.getNic().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid nic!");
-				} else if (!((employee.getNic().length() == 10)
-						|| (employee.getNic().length() == 12))) {
+				} else if (!((employee.getNic().length() == 10) || (employee.getNic().length() == 12))) {
 					JOptionPane.showMessageDialog(null, "Sorry, Check NIC length!");
-				}
-				else if (employeeValidator.isNICExists(employee.getNic())) {
+				} else if (employeeValidator.isNICExists(employee.getNic())) {
 					JOptionPane.showMessageDialog(null, "Sorry, NIC has already taken!");
-				}
-				else if (employee.getJob().equals("")) {
+				} else if (employee.getJob().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid UC position!");
 				} else {
 					try {
-						// establishing MySQL connection
-						connection = MySQLConnection.establishMySqlConnection();
-						
-						// creating prepared statement to execute parameterized query
-						preparedStatement = connection.prepareStatement(MySQLQuery.sqlQueryForUserRegistration);
 
-						// setting vales using PreparedStatement's setter methods 
-						// registering for user, his (user) role id is 2 
-						preparedStatement.setInt(1, 2);
-						preparedStatement.setString(2, employee.getName());
-						preparedStatement.setString(3, employee.getUserName());
-						preparedStatement.setString(4, employee.getNic());
-						preparedStatement.setString(5, employee.getJob());
-						preparedStatement.setString(6, employee.getPassword());
-						
-						// executeUpdate() returns either (1) the row count for SQL Data Manipulation Language (DML) statements or (2) 0 for SQL statements that return nothing
-						if (preparedStatement.executeUpdate() > 0) {
+						int userRegistrationResult = mySQLQueryMethod.registerEmployee(employee);
+
+						// executeUpdate() returns either (1) the row count for SQL Data Manipulation
+						// Language (DML) statements or (2) 0 for SQL statements that return nothing
+						if (userRegistrationResult > 0) {
 							JOptionPane.showMessageDialog(null, "User Registration Successful!");
 							// create instance of AdminHandeledJFrame
 							AdminHandeledJFrame adminHandeledJFrame = new AdminHandeledJFrame();
-							
-							// make it visible 
+
+							// make it visible
 							adminHandeledJFrame.setVisible(true);
-							
+
 							// center this JFrame
 							adminHandeledJFrame.setLocationRelativeTo(null);
-							
+
 							// dispose the current JFrame
 							dispose();
 						}
-					} catch (SQLException e1) {
-						JOptionPane.showMessageDialog(null, e1);
 					} finally {
-						try {
-							preparedStatement.close();
-						} catch (SQLException e1) {
-							e1.printStackTrace();
-						}
-						try {
-							connection.close();
-						} catch (SQLException e1) {
-							e1.printStackTrace();
-						}
+
 					}
 
 				}
@@ -244,7 +215,7 @@ public class UserRegistrationJFrame extends JFrame {
 		});
 		btnBack.setBounds(39, 443, 114, 34);
 		contentPane.add(btnBack);
-		
+
 		JLabel label = new JLabel("NIC Number");
 		label.setFont(new Font("Dialog", Font.BOLD, 15));
 		label.setBounds(39, 306, 103, 34);
@@ -259,22 +230,6 @@ public class UserRegistrationJFrame extends JFrame {
 		this.employee = employee;
 	}
 
-	public Connection getConnection() {
-		return connection;
-	}
-
-	public void setConnection(Connection connection) {
-		this.connection = connection;
-	}
-
-	public PreparedStatement getPreparedStatement() {
-		return preparedStatement;
-	}
-
-	public void setPreparedStatement(PreparedStatement preparedStatement) {
-		this.preparedStatement = preparedStatement;
-	}
-
 	public EmployeeValidator getEmployeeValidator() {
 		return employeeValidator;
 	}
@@ -282,5 +237,5 @@ public class UserRegistrationJFrame extends JFrame {
 	public void setEmployeeValidator(EmployeeValidator employeeValidator) {
 		this.employeeValidator = employeeValidator;
 	}
-	
+
 }

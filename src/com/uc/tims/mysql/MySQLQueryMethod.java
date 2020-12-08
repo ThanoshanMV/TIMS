@@ -110,7 +110,7 @@ public class MySQLQueryMethod {
 
 			// returns > 0 if successfully executed
 			return preparedStatement.executeUpdate();
-			
+
 		} catch (SQLException e1) {
 			JOptionPane.showMessageDialog(null, e1);
 		} finally {
@@ -300,17 +300,17 @@ public class MySQLQueryMethod {
 		// registration failed
 		return -1;
 	}
-	
+
 	public int updatePayment(Payment payment, String nic) {
 		// name, nic, park
-		
+
 		// establishing MySQL connection
 		connection = MySQLConnection.establishMySqlConnection();
-		
+
 		try {
 			// creating prepared statement to execute parameterized query
 			String sqlQueryForUpdateDriverDetails = "UPDATE `payment` SET `name`= ?,`nic`= ? ,`park`= ? WHERE `nic`= ?";
-			
+
 			preparedStatement = connection.prepareStatement(sqlQueryForUpdateDriverDetails);
 
 			// setting vales using PreparedStatement's setter methods
@@ -338,7 +338,7 @@ public class MySQLQueryMethod {
 		// registration failed
 		return -1;
 	}
-	
+
 	public int changePassword(Employee employee) {
 		// establishing MySQL connection
 		connection = MySQLConnection.establishMySqlConnection();
@@ -370,7 +370,7 @@ public class MySQLQueryMethod {
 		// registration failed
 		return -1;
 	}
-	
+
 	public int savePayment(Payment payment) {
 		// establishing MySQL connection
 		connection = MySQLConnection.establishMySqlConnection();
@@ -412,14 +412,15 @@ public class MySQLQueryMethod {
 		// registration failed
 		return -1;
 	}
-	
+
 	public ResultSet findPaymentHistory(String selection, String searchValue) {
 		// establishing MySQL connection
 		connection = MySQLConnection.establishMySqlConnection();
 
 		try {
 			// can not add to MySQLQuery class as if I put there "WHERE ? = ?" error occurs
-			String findPaymentHistory = "SELECT `park`,`name`,`nic`,`year2013`,`year2014`,`year2015`,`year2016`,`year2017`,`year2018`,`year2019`,`year2020`,`year2021`,`year2022`,`totalpayment` FROM `payment` WHERE `" + selection + "` = ?";
+			String findPaymentHistory = "SELECT `park`,`name`,`nic`,`year2013`,`year2014`,`year2015`,`year2016`,`year2017`,`year2018`,`year2019`,`year2020`,`year2021`,`year2022`,`totalpayment` FROM `payment` WHERE `"
+					+ selection + "` = ?";
 
 			// creating prepared statement to execute parameterized query
 			preparedStatement = connection.prepareStatement(findPaymentHistory);
@@ -427,10 +428,9 @@ public class MySQLQueryMethod {
 			// setting vales using PreparedStatement's setter methods
 			preparedStatement.setString(1, searchValue);
 
-
 			// execute the selected query and return an instance of ResultSet
 			resultSet = preparedStatement.executeQuery();
-			
+
 			System.out.println(resultSet);
 
 			return resultSet;
@@ -447,7 +447,7 @@ public class MySQLQueryMethod {
 		// https://initcodes.blogspot.com/2018/05/javasqlsqlexception-operation-not.html
 		return resultSet;
 	}
-	
+
 	public ResultSet findDriverDetails(String selection, String searchValue) {
 		// establishing MySQL connection
 		connection = MySQLConnection.establishMySqlConnection();
@@ -463,10 +463,9 @@ public class MySQLQueryMethod {
 			// setting vales using PreparedStatement's setter methods
 			preparedStatement.setString(1, searchValue);
 
-
 			// execute the selected query and return an instance of ResultSet
 			resultSet = preparedStatement.executeQuery();
-			
+
 			return resultSet;
 
 		} catch (SQLException e1) {
@@ -481,22 +480,22 @@ public class MySQLQueryMethod {
 		// https://initcodes.blogspot.com/2018/05/javasqlsqlexception-operation-not.html
 		return resultSet;
 	}
-	
+
 	public ResultSet findDriverByParkNo(String parkNumber) {
 		// establishing MySQL connection
 		connection = MySQLConnection.establishMySqlConnection();
 
 		try {
 			// creating prepared statement to execute parameterized query
-			preparedStatement = connection.prepareStatement(MySQLQuery.sqlQueryForSelectDriverDetailsForSearchOperartion);
+			preparedStatement = connection
+					.prepareStatement(MySQLQuery.sqlQueryForSelectDriverDetailsForSearchOperartion);
 
-			// setting parkno value using PreparedStatement's setter methods 
+			// setting parkno value using PreparedStatement's setter methods
 			preparedStatement.setString(1, parkNumber);
-
 
 			// execute the selected query and return an instance of ResultSet
 			resultSet = preparedStatement.executeQuery();
-			
+
 			return resultSet;
 
 		} catch (SQLException e1) {
@@ -511,14 +510,15 @@ public class MySQLQueryMethod {
 		// https://initcodes.blogspot.com/2018/05/javasqlsqlexception-operation-not.html
 		return resultSet;
 	}
-	
+
 	public ResultSet findDriverBySelection(String selection, String searchValue) {
 		// establishing MySQL connection
 		connection = MySQLConnection.establishMySqlConnection();
 
 		try {
 			// can not add to MySQLQuery class as if I put there "WHERE ? = ?" error occurs
-			String findDriverBySelection = "SELECT `park`,`parkno`,`wheelno`,`name`,`address`,`nic`,`phoneno`,`gs` FROM `driver` WHERE `" + selection + "` LIKE ?";
+			String findDriverBySelection = "SELECT `park`,`parkno`,`wheelno`,`name`,`address`,`nic`,`phoneno`,`gs` FROM `driver` WHERE `"
+					+ selection + "` LIKE ?";
 
 			// creating prepared statement to execute parameterized query
 			preparedStatement = connection.prepareStatement(findDriverBySelection);
@@ -526,10 +526,9 @@ public class MySQLQueryMethod {
 			// setting vales using PreparedStatement's setter methods
 			preparedStatement.setString(1, searchValue);
 
-
 			// execute the selected query and return an instance of ResultSet
 			resultSet = preparedStatement.executeQuery();
-			
+
 			System.out.println(resultSet);
 
 			return resultSet;
@@ -546,7 +545,7 @@ public class MySQLQueryMethod {
 		// https://initcodes.blogspot.com/2018/05/javasqlsqlexception-operation-not.html
 		return resultSet;
 	}
-	
+
 	public int deleteDriverByNic(String nic) {
 		// establishing MySQL connection
 		connection = MySQLConnection.establishMySqlConnection();
@@ -559,7 +558,7 @@ public class MySQLQueryMethod {
 
 			// returns > 0 if successfully executed
 			return preparedStatement.executeUpdate();
-			
+
 		} catch (SQLException e1) {
 			JOptionPane.showMessageDialog(null, e1);
 		} finally {
@@ -577,15 +576,16 @@ public class MySQLQueryMethod {
 		// registration failed
 		return -1;
 	}
-	
+
 	public ResultSet countParkBySelection(String selection, String searchValue) {
 		// establishing MySQL connection
 		connection = MySQLConnection.establishMySqlConnection();
 
 		try {
-			
-			String sqlQueryForCountParkBySelection = "SELECT COUNT(`park`) FROM `driver` WHERE `" + selection + "` LIKE ?";
-			
+
+			String sqlQueryForCountParkBySelection = "SELECT COUNT(`park`) FROM `driver` WHERE `" + selection
+					+ "` LIKE ?";
+
 			// creating prepared statement to execute parameterized query
 			preparedStatement = connection.prepareStatement(sqlQueryForCountParkBySelection);
 
@@ -609,6 +609,101 @@ public class MySQLQueryMethod {
 		// https://initcodes.blogspot.com/2018/05/javasqlsqlexception-operation-not.html
 		return resultSet;
 	}
-	
+
+	public ResultSet findDriverSummaryByParkCount() {
+		// establishing MySQL connection
+		connection = MySQLConnection.establishMySqlConnection();
+
+		try {
+			// creating prepared statement to execute parameterized query
+			preparedStatement = connection.prepareStatement(MySQLQuery.sqlQueryForGetSummaryByParkCount);
+
+			// execute the selected query and return an instance of ResultSet
+			resultSet = preparedStatement.executeQuery();
+
+			return resultSet;
+
+		} catch (SQLException e1) {
+			JOptionPane.showMessageDialog(null, e1);
+		}
+		// cannot close the connection, statement instance until we are done with
+		// ResultSet. Once we are done with ResultSet, we can close both ResultSet,
+		// connection and statement.
+		// if we don't do like it, we'll get error: java.sql.SQLException: Operation not
+		// allowed after ResultSet closed
+		// source:
+		// https://initcodes.blogspot.com/2018/05/javasqlsqlexception-operation-not.html
+		return resultSet;
+	}
+
+	public ResultSet loginUser(Employee employee) {
+		// establishing MySQL connection
+		connection = MySQLConnection.establishMySqlConnection();
+
+		try {
+			// creating prepared statement to execute parameterized query
+			preparedStatement = connection.prepareStatement(MySQLQuery.sqlQueryForUserLogIn);
+
+			// setting vales using PreparedStatement's setter methods
+			preparedStatement.setString(1, employee.getUserName());
+			preparedStatement.setString(2, employee.getPassword());
+
+			// execute the selected query and return an instance of ResultSet
+			resultSet = preparedStatement.executeQuery();
+
+			return resultSet;
+
+		} catch (SQLException e1) {
+			JOptionPane.showMessageDialog(null, e1);
+		}
+		// login failed
+		// cannot close the connection, statement instance until we are done with
+		// ResultSet. Once we are done with ResultSet, we can close both ResultSet,
+		// connection and statement.
+		// if we don't do like it, we'll get error: java.sql.SQLException: Operation not
+		// allowed after ResultSet closed
+		// source:
+		// https://initcodes.blogspot.com/2018/05/javasqlsqlexception-operation-not.html
+		return resultSet;
+	}
+
+	public int registerEmployee(Employee employee) {
+
+		// establishing MySQL connection
+		connection = MySQLConnection.establishMySqlConnection();
+
+		try {
+			// creating prepared statement to execute parameterized query
+			preparedStatement = connection.prepareStatement(MySQLQuery.sqlQueryForUserRegistration);
+
+			// setting vales using PreparedStatement's setter methods
+			// registering for user, his (user) role id is 2
+			preparedStatement.setInt(1, 2);
+			preparedStatement.setString(2, employee.getName());
+			preparedStatement.setString(3, employee.getUserName());
+			preparedStatement.setString(4, employee.getNic());
+			preparedStatement.setString(5, employee.getJob());
+			preparedStatement.setString(6, employee.getPassword());
+
+			// returns > 0 if successfully registered
+			return preparedStatement.executeUpdate();
+
+		} catch (SQLException e1) {
+			JOptionPane.showMessageDialog(null, e1);
+		} finally {
+			try {
+				preparedStatement.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			try {
+				connection.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}
+		// registration failed
+		return -1;
+	}
 
 }

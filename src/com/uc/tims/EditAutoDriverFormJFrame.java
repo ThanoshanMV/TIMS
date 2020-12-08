@@ -8,7 +8,6 @@ import javax.swing.border.EmptyBorder;
 
 import com.uc.tims.entity.Driver;
 import com.uc.tims.entity.Payment;
-import com.uc.tims.mysql.MySQLConnection;
 import com.uc.tims.mysql.MySQLQueryMethod;
 
 import javax.swing.JLabel;
@@ -16,14 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
@@ -49,11 +41,9 @@ public class EditAutoDriverFormJFrame extends JFrame {
 	private JTextField txtphonenumber;
 	private JTextField txtImageUrl;
 
-	
 	private Driver driver;
 	private Payment payment;
 	private MySQLQueryMethod mySQLQueryMethod;
-
 
 	/**
 	 * Launch the application.
@@ -79,12 +69,12 @@ public class EditAutoDriverFormJFrame extends JFrame {
 
 		setTitle("Edit details");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
-		
+
 		// creating driver object
 		driver = new Driver();
-		
+
 		payment = new Payment();
-		
+
 		// create MySQLQueryMethod instance
 		mySQLQueryMethod = new MySQLQueryMethod();
 
@@ -238,7 +228,7 @@ public class EditAutoDriverFormJFrame extends JFrame {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				char c = e.getKeyChar();
-				// avoid non-digits 
+				// avoid non-digits
 				if (!((Character.isDigit(c)) || (c == KeyEvent.VK_BACK_SPACE) || (c == KeyEvent.VK_DELETE))) {
 					e.consume();
 
@@ -267,11 +257,11 @@ public class EditAutoDriverFormJFrame extends JFrame {
 				driver.setGsDecision(comboBox.getSelectedItem().toString());
 				driver.setImageUrl(txtImageUrl.getText());
 				driver.setImage(driver.readImageFile(driver.getImageUrl()));
-				
+
 				payment.setName(driver.getName());
 				payment.setNic(driver.getNic());
 				payment.setPark(driver.getPark());
-				
+
 				if (driver.getParkNumber().equals("")) {
 					JOptionPane.showMessageDialog(null, "Please add a valid park no!");
 				} else if (driver.getWheelNumber().equals("")) {
@@ -294,16 +284,16 @@ public class EditAutoDriverFormJFrame extends JFrame {
 
 					int updateDriver = mySQLQueryMethod.updateDriver(driver);
 					int updatePayment = mySQLQueryMethod.updatePayment(payment, StaticMembers.nic);
-					
-						if (updateDriver > 0 && updatePayment > 0) {
-							JOptionPane.showMessageDialog(null, "Successfully Saved!");
-							DashboardJFrame dashboardJFrame = new DashboardJFrame();
-							dashboardJFrame.setVisible(true);
-							dashboardJFrame.setLocationRelativeTo(null);
-							dispose();
-						} else {
-							JOptionPane.showMessageDialog(null, "Updation failed. Check entered details or Try again.");
-						}
+
+					if (updateDriver > 0 && updatePayment > 0) {
+						JOptionPane.showMessageDialog(null, "Successfully Saved!");
+						DashboardJFrame dashboardJFrame = new DashboardJFrame();
+						dashboardJFrame.setVisible(true);
+						dashboardJFrame.setLocationRelativeTo(null);
+						dispose();
+					} else {
+						JOptionPane.showMessageDialog(null, "Updation failed. Check entered details or Try again.");
+					}
 
 				}
 			}
@@ -357,5 +347,5 @@ public class EditAutoDriverFormJFrame extends JFrame {
 	public void setDriver(Driver driver) {
 		this.driver = driver;
 	}
-	
+
 }

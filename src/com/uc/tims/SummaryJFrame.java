@@ -3,14 +3,12 @@ package com.uc.tims;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
-import com.uc.tims.mysql.MySQLConnection;
-import com.uc.tims.mysql.MySQLQuery;
+import com.uc.tims.mysql.MySQLQueryMethod;
 import com.uc.tims.utilities.Printer;
 
 import net.proteanit.sql.DbUtils;
@@ -24,12 +22,8 @@ import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
-import java.awt.print.PrinterException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.MessageFormat;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 
@@ -37,11 +31,10 @@ public class SummaryJFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JTable table;
-	
-	PreparedStatement preparedStatement = null;
-	ResultSet resultSet = null;
-	Connection connection = null;
-	Printer printer;
+
+	private ResultSet resultSet;
+	private Printer printer;
+	private MySQLQueryMethod mySQLQueryMethod;
 
 	/**
 	 * Launch the application.
@@ -64,10 +57,12 @@ public class SummaryJFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public SummaryJFrame() {
-		
+
 		// create new Printer instace
 		printer = new Printer();
-		
+
+		mySQLQueryMethod = new MySQLQueryMethod();
+
 		setTitle("Summary details");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
 
@@ -90,32 +85,16 @@ public class SummaryJFrame extends JFrame {
 		renderer.setHorizontalAlignment(SwingConstants.CENTER);
 
 		try {
-			
-			connection = MySQLConnection.establishMySqlConnection();
-			
-			preparedStatement = connection.prepareStatement(MySQLQuery.sqlQueryForGetSummaryByParkCount);
-			
-			resultSet = preparedStatement.executeQuery();
+
+			resultSet = mySQLQueryMethod.findDriverSummaryByParkCount();
 
 			table.setModel(DbUtils.resultSetToTableModel(resultSet));
 
 			setJTableColumnsWidth(table, 1024, 5, 5, 10, 20, 30, 10, 15, 5);
 
-		} catch (SQLException e1) {
-			e1.printStackTrace();
 		} finally {
 			try {
-				preparedStatement.close();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			try {
 				resultSet.close();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			try {
-				connection.close();
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}

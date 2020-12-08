@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.uc.tims.entity.Driver;
-import com.uc.tims.mysql.MySQLConnection;
 import com.uc.tims.mysql.MySQLQueryMethod;
 
 import javax.swing.JLabel;
@@ -26,8 +25,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -35,12 +32,11 @@ public class ChooseDriverPaymentJFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtnic;
-	
+
 	private Driver driver;
 	private ResultSet resultSet = null;
-	
-	private MySQLQueryMethod mySQLQueryMethod;
 
+	private MySQLQueryMethod mySQLQueryMethod;
 
 	/**
 	 * Launch the application.
@@ -65,10 +61,9 @@ public class ChooseDriverPaymentJFrame extends JFrame {
 	public ChooseDriverPaymentJFrame() {
 
 		driver = new Driver();
-		
+
 		mySQLQueryMethod = new MySQLQueryMethod();
 
-		
 		setTitle("Details of driver");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
 
@@ -97,7 +92,8 @@ public class ChooseDriverPaymentJFrame extends JFrame {
 		contentPane.add(label_2);
 
 		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "DA", "DB", "DC", "DD", "DE", "DF", "DG", "DH"}));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L",
+				"M", "N", "P", "Q", "R", "S", "DA", "DB", "DC", "DD", "DE", "DF", "DG", "DH" }));
 		comboBox.setFont(new Font("Dialog", Font.BOLD, 15));
 		comboBox.setBounds(218, 109, 157, 33);
 		contentPane.add(comboBox);
@@ -138,7 +134,6 @@ public class ChooseDriverPaymentJFrame extends JFrame {
 				try {
 
 					resultSet = mySQLQueryMethod.findPaymentByParkNic(driver);
-
 
 					if (resultSet.next()) {
 						JOptionPane.showMessageDialog(null, "Driver Connected");

@@ -7,8 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.uc.tims.entity.Employee;
-import com.uc.tims.mysql.MySQLConnection;
-import com.uc.tims.mysql.MySQLQuery;
+import com.uc.tims.mysql.MySQLQueryMethod;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -16,8 +15,6 @@ import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
@@ -34,11 +31,10 @@ public class UserLoginJFrame extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtuname;
 	private JPasswordField txtpassword;
-	
+
 	private Employee employee;
-	private PreparedStatement preparedStatement = null;
-	private ResultSet resultSet = null;
-	private Connection connection;
+	private ResultSet resultSet;
+	private MySQLQueryMethod mySQLQueryMethod;
 
 	/**
 	 * Launch the application.
@@ -63,7 +59,9 @@ public class UserLoginJFrame extends JFrame {
 	public UserLoginJFrame() {
 
 		employee = new Employee();
-		
+
+		mySQLQueryMethod = new MySQLQueryMethod();
+
 		setTitle("User login");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
 
@@ -126,16 +124,10 @@ public class UserLoginJFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				employee.setUserName(txtuname.getText());
 				employee.setPassword(String.valueOf(txtpassword.getPassword()));
-				System.out.println("User name " + employee.getUserName());
 
 				try {
-					connection = MySQLConnection.establishMySqlConnection();
-					
-					preparedStatement = connection.prepareStatement(MySQLQuery.sqlQueryForUserLogIn);
-					preparedStatement.setString(1, employee.getUserName());
-					preparedStatement.setString(2, employee.getPassword());
-					System.out.println("User name " + employee.getUserName());
-					resultSet = preparedStatement.executeQuery();
+
+					resultSet = mySQLQueryMethod.loginAdmin(employee);
 
 					if (resultSet.next()) {
 						JOptionPane.showMessageDialog(null, "Login successful");
@@ -154,17 +146,7 @@ public class UserLoginJFrame extends JFrame {
 					JOptionPane.showMessageDialog(null, "Error while establishing connection.");
 				} finally {
 					try {
-						preparedStatement.close();
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-					}
-					try {
 						resultSet.close();
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-					}
-					try {
-						connection.close();
 					} catch (SQLException e1) {
 						e1.printStackTrace();
 					}

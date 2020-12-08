@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.uc.tims.entity.Employee;
-import com.uc.tims.mysql.MySQLConnection;
 import com.uc.tims.mysql.MySQLQueryMethod;
 
 import javax.swing.JLabel;
@@ -17,9 +16,6 @@ import java.awt.Font;
 import javax.swing.WindowConstants;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
 import javax.swing.SwingConstants;
@@ -190,7 +186,5 @@ public class PasswordChange extends JFrame {
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
 	}
-
-
 
 }

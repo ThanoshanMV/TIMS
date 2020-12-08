@@ -44,9 +44,10 @@ public class StartJFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public StartJFrame() {
-		/*SqliteConnection.createBackupTable();
-		SendEmail.UpdateChecker();
-		SendEmail.backupNow();*/
+		/*
+		 * SqliteConnection.createBackupTable(); SendEmail.UpdateChecker();
+		 * SendEmail.backupNow();
+		 */
 
 		setTitle("Welcome-TIMS");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
@@ -79,10 +80,10 @@ public class StartJFrame extends JFrame {
 				AdminLoginJFrame adminLoginObject = new AdminLoginJFrame();
 				adminLoginObject.setVisible(true);
 				adminLoginObject.setLocationRelativeTo(null);
-				
+
 				// dispose the current JFrame (StartJFrame)
 				dispose();
-				//SqliteConnection.createAdminTable();
+				// SqliteConnection.createAdminTable();
 			}
 		});
 		btnAdmin.setBounds(109, 301, 125, 37);

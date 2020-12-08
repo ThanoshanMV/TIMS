@@ -70,13 +70,13 @@ public class AdminHandeledJFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// create instance of UserRegistrationJFrame
 				UserRegistrationJFrame userRegistrationJFrameObject = new UserRegistrationJFrame();
-				
-				// make it visible 
+
+				// make it visible
 				userRegistrationJFrameObject.setVisible(true);
-				
-				// center this JFrame 
+
+				// center this JFrame
 				userRegistrationJFrameObject.setLocationRelativeTo(null);
-				
+
 				// dispose current JFrame
 				dispose();
 				// SqliteConnection.createUserTable();
@@ -93,13 +93,13 @@ public class AdminHandeledJFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// create instance of DashboardJFrame
 				DashboardJFrame dashboardJFrame = new DashboardJFrame();
-				
-				// make it visible 
+
+				// make it visible
 				dashboardJFrame.setVisible(true);
-				
-				// center this JFrame 
+
+				// center this JFrame
 				dashboardJFrame.setLocationRelativeTo(null);
-				
+
 				// dispose current JFrame
 				dispose();
 
@@ -115,13 +115,13 @@ public class AdminHandeledJFrame extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				// create instance of StartJFrame
 				StartJFrame startJFrameObject = new StartJFrame();
-				
-				// make it visible 
+
+				// make it visible
 				startJFrameObject.setVisible(true);
-				
-				// center this JFrame 
+
+				// center this JFrame
 				startJFrameObject.setLocationRelativeTo(null);
-				
+
 				// dispose current JFrame
 				dispose();
 			}

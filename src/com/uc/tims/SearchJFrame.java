@@ -8,8 +8,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableColumn;
 
-import com.uc.tims.mysql.MySQLConnection;
-import com.uc.tims.mysql.MySQLQuery;
 import com.uc.tims.mysql.MySQLQueryMethod;
 
 import net.proteanit.sql.DbUtils;
@@ -24,8 +22,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -56,7 +52,7 @@ public class SearchJFrame extends JFrame {
 	private String tableClick;
 	private static String comboBoxSelection;
 	private JTextField txtCount;
-	
+
 	private ResultSet resultSet;
 	private String searchBy;
 	private MySQLQueryMethod mySQLQueryMethod;
@@ -82,10 +78,10 @@ public class SearchJFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public SearchJFrame() {
-		
+
 		// create MySQLQueryMethod instance
 		mySQLQueryMethod = new MySQLQueryMethod();
-		
+
 		setTitle("Search details");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
 
@@ -147,32 +143,30 @@ public class SearchJFrame extends JFrame {
 				try {
 					// creating SearchJFrame object
 					SearchJFrame searchJFrame = new SearchJFrame();
-					
-					// set the row 
+
+					// set the row
 					searchJFrame.setRow(table.getSelectedRow());
-					
+
 					// get clicked park number in the JTable and set to TableClick
 					searchJFrame.setTableClick(table.getModel().getValueAt(searchJFrame.getRow(), 1).toString());
-					
-					
+
 					// execute the selected query and return an instance of ResultSet
 					resultSet = mySQLQueryMethod.findDriverByParkNo(searchJFrame.getTableClick());
-					
-					
+
 					if (resultSet.next()) {
 						// get image from database as byte array
 						byte[] imageData = resultSet.getBytes("images");
-						
-						// creating ImageIcon object using that byte array 
+
+						// creating ImageIcon object using that byte array
 						ImageIcon iconThatCreatedFromBytes = new ImageIcon(imageData);
-						
+
 						// creating image object using ImageIcon
 						Image image = iconThatCreatedFromBytes.getImage();
-						
+
 						// creating SCALED ImageIcon using image object
 						ImageIcon icon = new ImageIcon(
 								ScaledImage(image, driverImage.getWidth(), driverImage.getHeight()));
-						
+
 						// setting this ImageIcon to placeholder in our SearchJFrame
 						driverImage.setIcon(icon);
 					}
@@ -202,13 +196,13 @@ public class SearchJFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// create instance of DashboardJFrame
 				DashboardJFrame dashboardJFrame = new DashboardJFrame();
-				
-				// make it visible 
+
+				// make it visible
 				dashboardJFrame.setVisible(true);
-				
+
 				// center this JFrame
 				dashboardJFrame.setLocationRelativeTo(null);
-				
+
 				// dispose the current JFrame
 				dispose();
 			}
@@ -222,30 +216,30 @@ public class SearchJFrame extends JFrame {
 		txtsearch.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+
 				// as the key released, we convert it to uppercase
 				txtsearch.setText(txtsearch.getText().toUpperCase());
-				
+
 				try {
-					
-					// assigning search by 
+
+					// assigning search by
 					setSearchBy((String) comboBoxSearch.getSelectedItem());
 
 					System.out.println(getSearchBy());
-					
+
 					String searchValue = "%" + txtsearch.getText() + "%";
-					
+
 					// execute the selected query and return an instance of ResultSet
 					resultSet = mySQLQueryMethod.findDriverBySelection(getSearchBy(), searchValue);
 
-					// set that resultSet to the table 
+					// set that resultSet to the table
 					table.setModel(DbUtils.resultSetToTableModel(resultSet));
 
 					setJTableColumnsWidth(table, 1024, 5, 5, 10, 20, 30, 15, 15, 5);
-					
+
 					// initially load TIMS logo as image placeholder
 					driverImage.setIcon(iconDefault);
-					
+
 					// initially set number of rows count to 0
 					txtCount.setText("0");
 
@@ -269,55 +263,56 @@ public class SearchJFrame extends JFrame {
 				// confirming on delete operation
 				int p = JOptionPane.showConfirmDialog(null, "Do you really want to delete ?", "Delete",
 						JOptionPane.YES_NO_OPTION);
-				
+
 				// can delete
 				if (p == 0) {
-						// creating SearchJFrame object
-						SearchJFrame searchJFrame = new SearchJFrame();
-						
-						// set the row 
-						searchJFrame.setRow(table.getSelectedRow());
-						
-						// get clicked park number
-						searchJFrame.setTableClick(table.getModel().getValueAt(searchJFrame.getRow(), 5).toString());
-						
-						// first, delete payment row as it is the parent table 
-						int deletePaymentRow = mySQLQueryMethod.deletePaymentByNic(searchJFrame.getTableClick());
-						
-						// next, delete associated driver row
-						int deleteDriverRow = mySQLQueryMethod.deleteDriverByNic(searchJFrame.getTableClick());
-						
-						if (deletePaymentRow > 0 && deleteDriverRow > 0) {
-							JOptionPane.showMessageDialog(null, "Successfully Deleted!");
+					// creating SearchJFrame object
+					SearchJFrame searchJFrame = new SearchJFrame();
+
+					// set the row
+					searchJFrame.setRow(table.getSelectedRow());
+
+					// get clicked park number
+					searchJFrame.setTableClick(table.getModel().getValueAt(searchJFrame.getRow(), 5).toString());
+
+					// first, delete payment row as it is the parent table
+					int deletePaymentRow = mySQLQueryMethod.deletePaymentByNic(searchJFrame.getTableClick());
+
+					// next, delete associated driver row
+					int deleteDriverRow = mySQLQueryMethod.deleteDriverByNic(searchJFrame.getTableClick());
+
+					if (deletePaymentRow > 0 && deleteDriverRow > 0) {
+						JOptionPane.showMessageDialog(null, "Successfully Deleted!");
+						driverImage.setIcon(iconDefault);
+
+						// refresh the table after deletion by re executing
+						// sqlQueryForSelectDriverDetailsBySearch
+						try {
+							String searchValue = "%" + txtsearch.getText() + "%";
+
+							resultSet = mySQLQueryMethod.findDriverBySelection(getSearchBy(), searchValue);
+
+							// set that resultSet to the table
+							table.setModel(DbUtils.resultSetToTableModel(resultSet));
+
+							setJTableColumnsWidth(table, 1024, 5, 5, 10, 20, 30, 15, 15, 5);
+
+							// load TIMS logo as image placeholder
 							driverImage.setIcon(iconDefault);
 
-							// refresh the table after deletion by re executing sqlQueryForSelectDriverDetailsBySearch
-							try {								
-								String searchValue = "%" + txtsearch.getText() + "%";
-								
-								resultSet = mySQLQueryMethod.findDriverBySelection(getSearchBy(), searchValue);
+							txtCount.setText("0");
 
-								// set that resultSet to the table 
-								table.setModel(DbUtils.resultSetToTableModel(resultSet));
-
-								setJTableColumnsWidth(table, 1024, 5, 5, 10, 20, 30, 15, 15, 5);
-								
-								// load TIMS logo as image placeholder
-								driverImage.setIcon(iconDefault);
-								
-								txtCount.setText("0");
-								
-							} finally {
-								try {
-									resultSet.close();
-								} catch (SQLException e1) {
-									e1.printStackTrace();
-								}
+						} finally {
+							try {
+								resultSet.close();
+							} catch (SQLException e1) {
+								e1.printStackTrace();
 							}
-
-						} else {
-							JOptionPane.showMessageDialog(null, "Deletion failed. Try again later");
 						}
+
+					} else {
+						JOptionPane.showMessageDialog(null, "Deletion failed. Try again later");
+					}
 				} else {
 					// Do nothing
 				}
@@ -337,15 +332,16 @@ public class SearchJFrame extends JFrame {
 					JOptionPane.showMessageDialog(null, "Please fill Search information");
 				} else {
 					try {
-						
+
 						String searchValue = "%" + txtsearch.getText() + "%";
-						
+
 						// execute the selected query and return an instance of ResultSet
 						resultSet = mySQLQueryMethod.countParkBySelection(getSearchBy(), searchValue);
-						
-						// resultSet.next() returns true if the new current row is valid otherwise false if there are no more rows
+
+						// resultSet.next() returns true if the new current row is valid otherwise false
+						// if there are no more rows
 						if (resultSet.next()) {
-							// return number of rows in table by counting address 
+							// return number of rows in table by counting address
 							txtCount.setText(resultSet.getString("COUNT(`park`)"));
 						} else {
 							txtCount.setText("0");
@@ -372,13 +368,13 @@ public class SearchJFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// create instance of AutoDriverRegistrationJFrame
 				AutoDriverRegistrationJFrame autoDriverRegistrationJFrame = new AutoDriverRegistrationJFrame();
-				
+
 				// make it visible
 				autoDriverRegistrationJFrame.setVisible(true);
-				
-				// center this JFrame 
+
+				// center this JFrame
 				autoDriverRegistrationJFrame.setLocationRelativeTo(null);
-				
+
 				// dispose current JFrame
 				dispose();
 			}

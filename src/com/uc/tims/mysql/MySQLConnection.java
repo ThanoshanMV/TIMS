@@ -2,8 +2,6 @@ package com.uc.tims.mysql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
@@ -17,15 +15,14 @@ public class MySQLConnection {
 		} catch (ClassNotFoundException e) {
 			JOptionPane.showMessageDialog(null, e);
 			return null;
-		}
-		catch(SQLException e) {
+		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(null, e);
 			return null;
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		MySQLConnection.establishMySqlConnection();
 	}
-	
+
 }

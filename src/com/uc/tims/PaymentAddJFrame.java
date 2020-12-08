@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.uc.tims.entity.Payment;
-import com.uc.tims.mysql.MySQLConnection;
 import com.uc.tims.mysql.MySQLQueryMethod;
 
 import javax.swing.JLabel;
@@ -23,7 +22,6 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -44,12 +42,11 @@ public class PaymentAddJFrame extends JFrame {
 	private JTextField txt18;
 	private JTextField txt20;
 	private JTextField txt22;
-	
+
 	private Payment payment;
 	private PreparedStatement preparedStatement;
 	private Connection connection;
 	private MySQLQueryMethod mySQLQueryMethod;
-	
 
 	/**
 	 * Launch the application.
@@ -74,10 +71,10 @@ public class PaymentAddJFrame extends JFrame {
 	public PaymentAddJFrame() {
 
 		payment = new Payment();
-		
+
 		// create MySQLQueryMethod instance
 		mySQLQueryMethod = new MySQLQueryMethod();
-		
+
 		setTitle("Payment history");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/tims.png")));
 
@@ -182,9 +179,9 @@ public class PaymentAddJFrame extends JFrame {
 		txt13.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
-						txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(), txt21.getText(),
-						txt22.getText()));
+				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(),
+						txt16.getText(), txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(),
+						txt21.getText(), txt22.getText()));
 			}
 
 			@Override
@@ -207,9 +204,9 @@ public class PaymentAddJFrame extends JFrame {
 		txt15.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
-						txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(), txt21.getText(),
-						txt22.getText()));
+				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(),
+						txt16.getText(), txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(),
+						txt21.getText(), txt22.getText()));
 			}
 
 			@Override
@@ -232,9 +229,9 @@ public class PaymentAddJFrame extends JFrame {
 		txt17.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
-						txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(), txt21.getText(),
-						txt22.getText()));
+				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(),
+						txt16.getText(), txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(),
+						txt21.getText(), txt22.getText()));
 			}
 
 			@Override
@@ -257,9 +254,9 @@ public class PaymentAddJFrame extends JFrame {
 		txt19.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
-						txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(), txt21.getText(),
-						txt22.getText()));
+				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(),
+						txt16.getText(), txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(),
+						txt21.getText(), txt22.getText()));
 			}
 
 			@Override
@@ -282,9 +279,9 @@ public class PaymentAddJFrame extends JFrame {
 		txt21.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
-						txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(), txt21.getText(),
-						txt22.getText()));
+				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(),
+						txt16.getText(), txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(),
+						txt21.getText(), txt22.getText()));
 			}
 
 			@Override
@@ -317,9 +314,9 @@ public class PaymentAddJFrame extends JFrame {
 		txt14.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
-						txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(), txt21.getText(),
-						txt22.getText()));
+				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(),
+						txt16.getText(), txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(),
+						txt21.getText(), txt22.getText()));
 			}
 
 			@Override
@@ -342,9 +339,9 @@ public class PaymentAddJFrame extends JFrame {
 		txt16.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
-						txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(), txt21.getText(),
-						txt22.getText()));
+				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(),
+						txt16.getText(), txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(),
+						txt21.getText(), txt22.getText()));
 			}
 
 			@Override
@@ -367,9 +364,9 @@ public class PaymentAddJFrame extends JFrame {
 		txt18.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
-						txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(), txt21.getText(),
-						txt22.getText()));
+				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(),
+						txt16.getText(), txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(),
+						txt21.getText(), txt22.getText()));
 			}
 
 			@Override
@@ -392,9 +389,9 @@ public class PaymentAddJFrame extends JFrame {
 		txt20.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
-						txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(), txt21.getText(),
-						txt22.getText()));
+				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(),
+						txt16.getText(), txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(),
+						txt21.getText(), txt22.getText()));
 			}
 
 			@Override
@@ -417,9 +414,9 @@ public class PaymentAddJFrame extends JFrame {
 		txt22.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(), txt16.getText(),
-						txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(), txt21.getText(),
-						txt22.getText()));
+				txttotal.setText(payment.calculateTotalPayment(txt13.getText(), txt14.getText(), txt15.getText(),
+						txt16.getText(), txt17.getText(), txt18.getText(), txt19.getText(), txt20.getText(),
+						txt21.getText(), txt22.getText()));
 			}
 
 			@Override
@@ -457,31 +454,28 @@ public class PaymentAddJFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-					
-					payment.setYear2013(payment.convertToDouble(txt13.getText()));
-					payment.setYear2014(payment.convertToDouble(txt14.getText()));
-					payment.setYear2015(payment.convertToDouble(txt15.getText()));
-					payment.setYear2016(payment.convertToDouble(txt16.getText()));
-					payment.setYear2017(payment.convertToDouble(txt17.getText()));
-					payment.setYear2018(payment.convertToDouble(txt18.getText()));
-					payment.setYear2019(payment.convertToDouble(txt19.getText()));
-					payment.setYear2020(payment.convertToDouble(txt20.getText()));
-					payment.setYear2021(payment.convertToDouble(txt21.getText()));
-					payment.setYear2022(payment.convertToDouble(txt22.getText()));
-					payment.setTotalPayment(payment.convertToDouble(txttotal.getText()));
-					payment.setName(txtname.getText());
-					
-					
+				payment.setYear2013(payment.convertToDouble(txt13.getText()));
+				payment.setYear2014(payment.convertToDouble(txt14.getText()));
+				payment.setYear2015(payment.convertToDouble(txt15.getText()));
+				payment.setYear2016(payment.convertToDouble(txt16.getText()));
+				payment.setYear2017(payment.convertToDouble(txt17.getText()));
+				payment.setYear2018(payment.convertToDouble(txt18.getText()));
+				payment.setYear2019(payment.convertToDouble(txt19.getText()));
+				payment.setYear2020(payment.convertToDouble(txt20.getText()));
+				payment.setYear2021(payment.convertToDouble(txt21.getText()));
+				payment.setYear2022(payment.convertToDouble(txt22.getText()));
+				payment.setTotalPayment(payment.convertToDouble(txttotal.getText()));
+				payment.setName(txtname.getText());
 
-					if (mySQLQueryMethod.savePayment(payment) > 0) {
-						JOptionPane.showMessageDialog(null, "Successfully Saved!");
-						DashboardJFrame dashboardJFrame = new DashboardJFrame();
-						dashboardJFrame.setVisible(true);
-						dashboardJFrame.setLocationRelativeTo(null);
-						dispose();
-					} else {
-						JOptionPane.showMessageDialog(null, "Updation failed. Check entered details or Try again.");
-					}
+				if (mySQLQueryMethod.savePayment(payment) > 0) {
+					JOptionPane.showMessageDialog(null, "Successfully Saved!");
+					DashboardJFrame dashboardJFrame = new DashboardJFrame();
+					dashboardJFrame.setVisible(true);
+					dashboardJFrame.setLocationRelativeTo(null);
+					dispose();
+				} else {
+					JOptionPane.showMessageDialog(null, "Updation failed. Check entered details or Try again.");
+				}
 
 			}
 		});

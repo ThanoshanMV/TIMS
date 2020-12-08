@@ -10,19 +10,19 @@ import javax.swing.JOptionPane;
 import com.uc.tims.mysql.MySQLConnection;
 
 public class EmployeeValidator implements MySQLValidatable {
-	
+
 	private PreparedStatement preparedStatement = null;
 	private ResultSet resultSet = null;
 	private Connection connection = null;
-	
+
 	@Override
 	public boolean isNameExists(String name) {
 		boolean checkName = false;
 		String query = "SELECT * FROM `employee` WHERE `name`= ?";
 		try {
-			
+
 			connection = MySQLConnection.establishMySqlConnection();
-			
+
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1, name);
 
@@ -54,7 +54,7 @@ public class EmployeeValidator implements MySQLValidatable {
 			}
 		}
 		return checkName;
-	
+
 	}
 
 	@Override
@@ -66,9 +66,9 @@ public class EmployeeValidator implements MySQLValidatable {
 		boolean checkUserName = false;
 		String query = "SELECT * FROM `employee` WHERE `username`= ?";
 		try {
-			
+
 			connection = MySQLConnection.establishMySqlConnection();
-			
+
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1, name);
 
@@ -100,7 +100,7 @@ public class EmployeeValidator implements MySQLValidatable {
 			}
 		}
 		return checkUserName;
-	
+
 	}
 
 	@Override
@@ -141,8 +141,7 @@ public class EmployeeValidator implements MySQLValidatable {
 			}
 		}
 		return checkNic;
-	
-	
+
 	}
 
 }
