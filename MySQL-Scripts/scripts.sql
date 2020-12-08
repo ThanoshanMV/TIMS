@@ -109,6 +109,9 @@ SELECT * FROM role;
 # delete all rows from driver table
 # DELETE FROM driver;
 
+# delete all rows from employee table
+# DELETE FROM employee;
+
 # we can set auto increment from any number
 # ALTER TABLE driver AUTO_INCREMENT = 1;
 
