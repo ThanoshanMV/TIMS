@@ -7,9 +7,9 @@ public class MySQLQuery {
 	 */
 	public final static String sqlQueryForUserRegistration = "INSERT INTO `employee`(`roleid`,`name`,`username`,`nic`,`job`,`password`) VALUES (?,?,?,?,?,?)";
 
-	public final static String sqlQueryForUserLogIn = "SELECT * FROM `employee` WHERE `username`= ? AND `password`= ?";
+	public final static String sqlQueryForUserLogIn = "SELECT * FROM `employee` WHERE (`username`= ? AND `password`= ?) AND `roleid` = 2";
 
-	public final static String sqlQueryForAdminLogIn = "SELECT * FROM `employee` WHERE `username`= ? AND `password`= ?";
+	public final static String sqlQueryForAdminLogIn = "SELECT * FROM `employee` WHERE (`username`= ? AND `password`= ?) AND `roleid` = 1";
 
 	/**
 	 * Queries for driver table

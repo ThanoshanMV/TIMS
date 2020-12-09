@@ -124,7 +124,7 @@ public class UserLoginJFrame extends JFrame {
 
 				try {
 
-					resultSet = mySQLQueryMethod.loginAdmin(employee);
+					resultSet = mySQLQueryMethod.loginUser(employee);
 
 					if (resultSet.next()) {
 						JOptionPane.showMessageDialog(null, "Login successful");
